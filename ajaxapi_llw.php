@@ -195,12 +195,23 @@ while ($row = $sqlresult->fetch_assoc()) {
 $data = [];
 $i = 0;
 foreach ($farms as $farm) {
+  // profile_image
   $farms[$i]['profile_image'] = checkImage('farms', $farm->farm_id, 'profile');
 
-
+  // average_rating
   $averageQuery = $conn->query("SELECT AVG(star_rating) AS average_rating FROM farm_ratings WHERE farm_id = ". $farm['farm_id']);
   $averageResult = $averageQuery->fetch_assoc();
   $farms[$i]['average_rating'] = $averageResult['average_rating'] ?? 0;
+
+
+  // price from
+  $priceQuery = $conn->query("SELECT AVG(price) AS avg_price, MIN(price) AS min_price, MAX(price) AS max_price FROM farm_accommodation_stock WHERE farm_id = " . $farm['farm_id']);
+  $priceResult = $priceQuery->fetch_assoc();
+  $farms[$i]['price'] = [];
+  if($priceResult){
+    $farms[$i]['price']['from'] = $priceResult['min_price'];
+    $farms[$i]['price']['to'] = $priceResult['max_price'];
+  }
   $i++;
 }
 
