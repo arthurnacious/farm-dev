@@ -73,6 +73,7 @@
                 },
             ];
 
+
             handleLike();
         </script>
         <!-- Style For SVG -->
@@ -80,7 +81,7 @@
             svg {
             pointer-events: none;
         }
-        </style>    
+      </style>
 
     </head>
     <body class="text-black-50">
@@ -697,11 +698,11 @@
                             $('#loader-spinner').html(`${spinner(150)} <h2>Loading...</h2>`);
                         },
                         success: function (data) {
-                            console.log('Success:', data);
                             updateDisplay(data);
                         },
                         error: function (error) {
                             $('#error').show();
+                            console.warn(error)
                         },
                         complete: function () {
                             $('#filter_btn').html(originalButtonText);
