@@ -278,7 +278,7 @@
                         <div class="col-lg-7 col-xl-8 order-lg-0"> 
                             <div class="align-items-center g-2 mb-3 row">
                                 <div class="col">
-                                    <h1 class="h5 mb-0 text-dark">Result for: <span class="fw-normal small text-secondary">search text</span></h1> 
+                                    <h1 class="h5 mb-0 text-dark">Result for: <span class="fw-normal small text-secondary" id="search_text">... </span></h1> 
                                 </div>
                                 <div class="col-sm-auto">
                                     <select class="form-select" id="sortingOption" required>
@@ -1167,6 +1167,12 @@
             function roundToNearestHalf(value) {
                 return Math.round(value * 2) / 2;
             }
+        </script>
+        <script>
+            $("#search_keywords").on("input", function() {
+                let value = $(this).val();
+              $("#search_text").text(value.length > 0 ? value : '...');
+            });
         </script>
     </body>
 </html>
