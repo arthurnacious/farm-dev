@@ -1,0 +1,277 @@
+/* navbar scroll */
+.smart-scroll {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+}
+
+.scrolled-down {
+    transform: translateY(-100%);
+    transition: all 2.3s ease-in-out;
+}
+
+.scrolled-up {
+    transform: translateY(0);
+    transition: all 2.3s ease-in-out;
+}
+
+#TimeRange {
+    position: relative;
+    transform: scale(1.4);
+
+    /* Or however big you want it */
+    transform-origin: 0 0;
+}
+
+#TimeRangeGuests {
+    position: relative;
+    transform: scale(1.4);
+
+    /* Or however big you want it */
+    transform-origin: 0 0;
+}
+
+ul.nav a:hover a {
+    color: #f345ff !important;
+}
+
+/* * Always set the map height explicitly to define the size of the div element
+ * that contains the map. */
+.map-container {
+    padding-top: 120px;
+    padding-left: 10px;
+}
+
+.map-container-small {
+    padding-top: 12px;
+    padding-left: 1px;
+}
+
+.leaflet-map {
+    position: relative;
+    border: 1px solid black;
+    border-radius: 8px;
+    height: 400px;
+    width: 100%;
+}
+
+.leaflet-modal-map {
+    position: relative;
+    border: 1px solid black;
+    border-radius: 8px;
+    height: 400px;
+    width: 100%;
+}
+
+.leaflet-map-small {
+    position: relative;
+    border: 1px solid black;
+    height: 320px;
+    width: 100%;
+}
+
+/* * Optional: Makes the sample page fill the window. */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#description {
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+}
+
+#infowindow-content .title {
+    font-weight: bold;
+}
+
+#infowindow-content {
+    display: none;
+}
+
+#map #infowindow-content {
+    display: inline;
+}
+
+.pac-card {
+    background-color: #fff;
+    border: 0;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+    margin: 10px;
+    padding: 0 0.5em;
+    font: 400 18px Roboto, Arial, sans-serif;
+    overflow: hidden;
+    font-family: Roboto;
+    padding: 0;
+}
+
+#pac-container {
+    padding-bottom: 12px;
+    margin-right: 12px;
+}
+
+.pac-controls {
+    display: inline-block;
+    padding: 5px 11px;
+}
+
+.pac-controls label {
+    font-family: Roboto;
+    font-size: 13px;
+    font-weight: 300;
+}
+
+#pac-input {
+    background-color: #fff;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 12px;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 400px;
+}
+
+#pac-input:focus {
+    border-color: #4d90fe;
+}
+
+#title {
+    color: #fff;
+    background-color: #4d90fe;
+    font-size: 25px;
+    font-weight: 500;
+    padding: 6px 12px;
+}
+
+#target {
+    width: 345px;
+}
+
+.container-resp {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.container-landing,
+.container-fluid,
+.container-xl,
+.container-lg,
+.container-md,
+.container-sm {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.imgBackground {
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    height: 1020px;
+}
+
+top-col-12 {
+    flex: 0 0 100%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 100%;
+    max-width: 100%;
+}
+
+/* * Custom Section style */
+.form-switch .form-check-input {
+    width: 3em !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='4' /%3e%3c/svg%3e") !important;
+    filter: invert(36%) sepia(95%) saturate(1335%) hue-rotate(3deg) brightness(107%) contrast(104%);
+}
+
+.form-switch .form-check-input:checked {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='4' /%3e%3c/svg%3e") !important;
+    filter: invert(36%) sepia(95%) saturate(1335%) hue-rotate(3deg) brightness(107%) contrast(104%);
+}
+
+.form-check-input,
+.form-check-input:checked {
+    background-color: rgb(249, 250, 248) !important;
+    border-color: rgb(235, 156, 10) !important;
+}
+
+.form-submit,
+.vt-form-range,
+.fav {
+    background-color: rgb(255, 106, 0) !important;
+    color: rgb(255, 255, 255) !important;
+}
+
+.location {
+    background-color: rgb(255, 255, 255) !important;
+    fill: rgb(255, 106, 0) !important;
+}
+
+.price,
+.currentcolor {
+    background-color: rgb(255, 255, 255) !important;
+    color: rgb(255, 106, 0) !important;
+}
+
+.icons {
+    color: rgb(255, 106, 0) !important;
+}
+
+.vt-accordion-collapse,
+.vt-accordion-button,
+.vt-accordion-header,
+.vt-accordion-item,
+.vt-accordion-toggle {
+    background: rgb(255, 106, 0) !important;
+}
+
+/* .accordion-toggle.collapsed {
+  background-color: white;
+} */
+.signin-fields {
+    padding-bottom: 4px;
+    margin-bottom: 12px;
+    padding-top: 4px;
+    margin-top: 11px;
+}
+
+.registration-fields {
+    padding-bottom: 18px;
+    margin-bottom: 15px;
+    padding-top: 18px;
+    margin-top: 15px;
+}
+
+/* * Star rating style */
+.star-rating {
+    line-height: 32px;
+    font-size: 1.25em;
+}
+
+.star-rating .fa-star {
+    color: rgb(255, 106, 0);
+}
+
+.fa-star-grey {
+    color: rgb(87, 86, 85);
+}
+
+/* Modal Z-index */
+.modal:nth-of-type(even) {
+    z-index: 1062 !important;
+}
+
+.modal-backdrop.show:nth-of-type(even) {
+    z-index: 1061 !important;
+}
