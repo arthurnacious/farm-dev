@@ -80,11 +80,20 @@ function checkImage($type, $id, $fileName) {
 
 
 
-$farms = getTable_llw('farm');
-foreach($farms as $farm) {
-  $farm->profileImage = checkImage('farms', $farm->farm_id, 'profile');
+// $farms = getTable_llw('farm');
+// foreach($farms as $farm) {
+//   $farm->profileImage = checkImage('farms', $farm->farm_id, 'profile');
+// }
+// require('/home/veldtuoy/llw_php/llw_config.php');
+//please remove me
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+  header('HTTP/1.1 403 Forbidden');
+  exit('Direct script access is not allowed.');
 }
-require('/home/veldtuoy/llw_php/llw_config.php');
+$db_host = 'localhost';
+$db_user = 'root';
+$db_pass = 'Pass1234';
+$db_name = 'farm';
 
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
@@ -164,7 +173,7 @@ foreach ($farms as $farm) {
 
 
   // price from
-  $priceQuery = $conn->query("SELECT AVG(price) AS avg_price, MIN(price) AS min_price, MAX(price) AS max_price FROM farm_accommodation_stock WHERE farm_id = " . $farm['farm_id']);
+  $priceQuery = $conn->query("SELECT AVG(price) AS avg_price, MIN(price) AS min_price, MAX(price) AS max_price FROM accommodation_units WHERE farm_id = " . $farm['farm_id']);
   $priceResult = $priceQuery->fetch_assoc();
   $farms[$i]['price'] = [];
   if($priceResult){
