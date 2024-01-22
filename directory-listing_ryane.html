@@ -85,36 +85,7 @@
                                     <div class="align-items-center d-flex justify-content-between">
                                         <div class="pb-1 pt-1">
                                             <span class="me-1 currentcolor">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
-                                                    <g>
-                                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                                        <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/>
-                                                    </g>
-                                                </svg>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
-                                                    <g>
-                                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                                        <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/>
-                                                    </g>
-                                                </svg>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
-                                                    <g>
-                                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                                        <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/>
-                                                    </g>
-                                                </svg>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
-                                                    <g>
-                                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                                        <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/>
-                                                    </g>
-                                                </svg>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
-                                                    <g>
-                                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                                        <path d="M12 15.968l4.247 2.377-.949-4.773 3.573-3.305-4.833-.573L12 5.275v10.693zm0 2.292l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928L12 18.26z"/>
-                                                    </g>
-                                                </svg>
+                                                ${generateStarRating(item.reviews_number)}
                                             </span>
                                             <span class="align-middle">${item.reviews_number}</span>
                                         </div>
@@ -1124,6 +1095,72 @@
                 };
             });
             
+        </script>
+
+        <script>
+            const emptyStarSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1.125em" height="1.125em">
+                        <g>
+                            <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/>
+                        </g>
+                    </svg>`;
+
+            const filledStarSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
+                                                    <g>
+                                                        <path fill="none" d="M0 0h24v24H0z"/>
+                                                        <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/>
+                                                    </g>
+                                                </svg>`;
+            const halfStarSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
+                                                    <g>
+                                                        <path fill="none" d="M0 0h24v24H0z"/>
+                                                        <path d="M12 15.968l4.247 2.377-.949-4.773 3.573-3.305-4.833-.573L12 5.275v10.693zm0 2.292l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928L12 18.26z"/>
+                                                    </g>
+                                                </svg>`;
+
+            function generateStarRating(ratingsAverage) {
+                let ratingHTML = '';
+
+                // Use a switch case to determine the star rating
+                switch (Math.round(ratingsAverage * 2) / 2) {
+                    case 0.5:
+                    ratingHTML = halfStarSVG;
+                    break;
+                    case 1:
+                    ratingHTML = filledStarSVG;
+                    break;
+                    case 1.5:
+                    ratingHTML = filledStarSVG + halfStarSVG;
+                    break;
+                    case 2:
+                    ratingHTML = filledStarSVG + filledStarSVG;
+                    break;
+                    case 2.5:
+                    ratingHTML = filledStarSVG + filledStarSVG + halfStarSVG;
+                    break;
+                    case 3:
+                    ratingHTML = filledStarSVG + filledStarSVG + filledStarSVG;
+                    break;
+                    case 3.5:
+                    ratingHTML = filledStarSVG + filledStarSVG + filledStarSVG + halfStarSVG;
+                    break;
+                    case 4:
+                    ratingHTML = filledStarSVG + filledStarSVG + filledStarSVG + filledStarSVG;
+                    break;
+                    case 4.5:
+                    ratingHTML =
+                        filledStarSVG + filledStarSVG + filledStarSVG + filledStarSVG + halfStarSVG;
+                    break;
+                    case 5:
+                    ratingHTML =
+                        filledStarSVG + filledStarSVG + filledStarSVG + filledStarSVG + filledStarSVG;
+                    break;
+                    default:
+                    ratingHTML = emptyStarSVG + emptyStarSVG + emptyStarSVG + emptyStarSVG + emptyStarSVG;
+                    break;
+                }
+
+                return ratingHTML;
+                }
         </script>
     </body>
 </html>
