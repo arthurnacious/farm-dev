@@ -159,8 +159,6 @@ if (!empty($conditions)) {
 
 
 
-echo json_encode($sqlStmnt);
-exit();
 
 
 
@@ -188,27 +186,20 @@ $sqlresult = $conn->query($sqlStmnt);
 
 
 
-
-
-
-
-
 $farms = [];
 while ($row = $sqlresult->fetch_assoc()) {
   $farms[] = $row;
 }
 
 
-
-
 $data = [];
+$i = 0;
 foreach ($farms as $farm) {
-  $averageQuery = $conn->query("SELECT AVG(star_rating) AS average_rating FROM farm_ratings WHERE farm_id = ". $farm['id']);
+  $averageQuery = $conn->query("SELECT AVG(star_rating) AS average_rating FROM farm_ratings WHERE farm_id = ". $farm['farm_id']);
   $averageResult = $averageQuery->fetch_assoc();
-  $data['average_rating'] = $averageResult['average_rating'];
+  $farms[$i]['average_rating'] = $averageResult['average_rating'] ?? 0;
+  $i++;
 }
-
-
 
 
 $conn->close();

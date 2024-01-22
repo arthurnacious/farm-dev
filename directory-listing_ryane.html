@@ -297,7 +297,7 @@
                                         </div>
                                     </div>                                     
                                     <div class="text-end">
-                                        <button type="submit" class="btn btn-primary pe-4 ps-4 rounded-pill">
+                                        <button id="filter_btn" type="submit" class="btn btn-primary pe-4 ps-4 rounded-pill">
                                             <span>Filter Result</span>
                                         </button>
                                     </div>                                     
@@ -325,7 +325,9 @@
                                 id="grids"
                             > 
                                 <div class="pb-3 pt-3"> 
-                                    <div class="border"> <a href="#" class="d-block"><img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixid=MXwyMDkyMnwwfDF8c2VhcmNofDY5fHxhbyUyMG5hbmd8ZW58MHx8fA&ixlib=rb-1.2.1q=85&fm=jpg&crop=faces&cs=srgb&w=350&h=240&fit=crop" class="img-fluid w-100" alt="Location image" width="350" height="240"></a>
+                                    <div class="border"> <a href="#" class="d-block">
+                                        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixid=MXwyMDkyMnwwfDF8c2VhcmNofDY5fHxhbyUyMG5hbmd8ZW58MHx8fA&ixlib=rb-1.2.1q=85&fm=jpg&crop=faces&cs=srgb&w=350&h=240&fit=crop" class="img-fluid w-100" alt="Location image" width="350" height="240">
+                                    </a>
                                         <div class="pb-3 ps-4 pe-4 pt-4">
                                             <div class="align-items-center d-flex justify-content-between">
                                                 <div class="pb-1 pt-1">
@@ -339,12 +341,15 @@
                                                         </svg>
                                                         <span class="align-middle">Ao Nang, Thailand</span>
                                                     </div>
-                                                </div><a class="btn fav ms-2 p-2 rounded-pill" href="#" aria-label="add to favorite"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em" class="d-block">
+                                                </div>
+                                                <a class="btn fav ms-2 p-2 rounded-pill" href="#" aria-label="add to favorite">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em" class="d-block">
                                                         <g>
                                                             <path fill="none" d="M0 0H24V24H0z"/>
                                                             <path d="M20.243 4.757c2.262 2.268 2.34 5.88.236 8.236l-8.48 8.492-8.478-8.492c-2.104-2.356-2.025-5.974.236-8.236C5.515 3 8.093 2.56 10.261 3.44L6.343 7.358l1.414 1.415L12 4.53l-.013-.014.014.013c2.349-2.109 5.979-2.039 8.242.228z"/>
                                                         </g>
-                                                    </svg></a>
+                                                    </svg>
+                                                </a>
                                             </div>
                                             <hr/>
                                             <div class="align-items-center d-flex justify-content-between">
@@ -1038,11 +1043,25 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 })
 </script>
 <script>
+    const spinner = `<svg id="loading-spinner" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 50 50">
+                        <circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke="#3498db">
+                            <animate attributeName="r" from="20" to="0" dur="1s" begin="0s" repeatCount="indefinite" />
+                            <animate attributeName="stroke-opacity" from="1" to="0" dur="1s" begin="0s" repeatCount="indefinite" />
+                        </circle>
+                    </svg>`;
+</script>
+
+<script>
     jQuery(document).ready(function ($) {
         // Attach the submitForm function to the form's submit event
         $('#filterForm_llw').submit(function (event) {
             // Prevent the default form submission
             event.preventDefault();
+
+
+            var originalButtonText = $('#filter_btn').text();
+
+            console.log({originalButtonText});
 
             // Collect form data
             var formData = {
@@ -1066,21 +1085,27 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
                     terrace_patio: $('#check_pat').prop('checked') ? 1 : 0,
                     restaurant: $('#check_rst').prop('checked') ? 1 : 0,
                 }
-            };
-    
+            };    
             // Make AJAX request
+
             $.ajax({
-                url: 'ajaxapi_llw.php', 
+                url: 'ajaxapi_llw.php',
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
+                beforeSend: function () {
+                    $('#filter_btn').html(`${spinner} Filtering...`);
+                },
                 success: function (data) {
                     console.log('Success:', data);
-            },
-            error: function (error) {
-                console.error('Error:', error);
-            }
-        });
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                },
+                complete: function () {
+                    $('#filter_btn').html(originalButtonText);
+                }
+            });
         });
     });
     
