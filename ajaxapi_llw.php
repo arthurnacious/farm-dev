@@ -80,20 +80,11 @@ function checkImage($type, $id, $fileName) {
 
 
 
-// $farms = getTable_llw('farm');
-// foreach($farms as $farm) {
-//   $farm->profileImage = checkImage('farms', $farm->farm_id, 'profile');
-// }
-// require('/home/veldtuoy/llw_php/llw_config.php');
-//please remove me
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-  header('HTTP/1.1 403 Forbidden');
-  exit('Direct script access is not allowed.');
+$farms = getTable_llw('farm');
+foreach($farms as $farm) {
+  $farm->profileImage = checkImage('farms', $farm->farm_id, 'profile');
 }
-$db_host = 'localhost';
-$db_user = 'root';
-$db_pass = 'Pass1234';
-$db_name = 'farm';
+require('/home/veldtuoy/llw_php/llw_config.php');
 
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
@@ -127,8 +118,6 @@ if ($searchKeywords) {
 }
 
 
-
-
 if (!empty($category)) {
   $conditions[] = "category = $category";
 }
@@ -141,8 +130,6 @@ if ($location) {
 }
 
 
-
-
 foreach ($tags as $key => $value) {
    if (isset($tags[$key]) && $tags[$key] !== '') {
        $conditions[] = "$key = " . (int) $value;
@@ -150,37 +137,9 @@ foreach ($tags as $key => $value) {
 }
 
 
-
-
 if (!empty($conditions)) {
   $sqlStmnt .= " WHERE " . implode(" AND ", $conditions);
 }
-
-
-
-
-
-
-
-
-// $sqlStmnt .= $free_wifi ? " AND free_wifi = 1" : null;
-// $sqlStmnt .= $housekeeping ? " AND housekeeping = 1" : null;
-// $sqlStmnt .= $fitness_center ? " AND fitness_center = 1" : null;
-// $sqlStmnt .= $swimming_pool ? " AND swimming_pool = 1" : null;
-// $sqlStmnt .= $dstv ? " AND dstv = 1" : null;
-// $sqlStmnt .= $air_conditioned ? " AND air_conditioned = 1" : null;
-// $sqlStmnt .= $gift_shop ? " AND gift_shop = 1" : null;
-// $sqlStmnt .= $meeting_hall ? " AND meeting_hall = 1" : null;
-// $sqlStmnt .= $pat_allowed ? " AND pat_allowed = 1" : null;
-// $sqlStmnt .= $outdoor_pool ? " AND outdoor_pool = 1" : null;
-// $sqlStmnt .= $free_parking ? " AND free_parking = 1" : null;
-// $sqlStmnt .= $bar_lounge ? " AND bar_lounge = 1" : null;
-// $sqlStmnt .= $terrace_pation ? " AND terrace_pation = 1" : null;
-// $sqlStmnt .= $restaurent ? " AND restaurent = 1" : null;
-// $sqlStmnt .= $wood ? " AND wood = 1" : null;
-
-
-
 
 $sqlresult = $conn->query($sqlStmnt);
 
