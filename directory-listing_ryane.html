@@ -52,7 +52,7 @@
                 updateDisplay();
             }
     
-            function updateDisplay() {
+            function updateDisplay(items) {
                 // Get the container element for the grids and clear it
                 let displayContainer = document.getElementById('grids');
                 displayContainer.innerHTML = '';
@@ -297,7 +297,7 @@
                                         </div>
                                     </div>                                     
                                     <div class="text-end">
-                                        <button id="filter_btn" type="submit" class="btn btn-primary pe-4 ps-4 rounded-pill">
+                                        <button type="submit" class="btn btn-primary pe-4 ps-4 rounded-pill">
                                             <span>Filter Result</span>
                                         </button>
                                     </div>                                     
@@ -320,14 +320,17 @@
                                     </select>                                     
                                 </div>
                             </div>
+                            <div id="loader-spinner"></div>
+                            <div id="error" class="invisible"> An error has occured...</div>
                             <div
                                 class="justify-content-center row row-cols-md-2"
                                 id="grids"
                             > 
-                                <div class="pb-3 pt-3"> 
-                                    <div class="border"> <a href="#" class="d-block">
-                                        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixid=MXwyMDkyMnwwfDF8c2VhcmNofDY5fHxhbyUyMG5hbmd8ZW58MHx8fA&ixlib=rb-1.2.1q=85&fm=jpg&crop=faces&cs=srgb&w=350&h=240&fit=crop" class="img-fluid w-100" alt="Location image" width="350" height="240">
-                                    </a>
+                                <div class="pb-3 pt-3 data-loop"> 
+                                    <div class="border">
+                                        <a href="#" class="d-block">
+                                            <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixid=MXwyMDkyMnwwfDF8c2VhcmNofDY5fHxhbyUyMG5hbmd8ZW58MHx8fA&ixlib=rb-1.2.1q=85&fm=jpg&crop=faces&cs=srgb&w=350&h=240&fit=crop" class="img-fluid w-100" alt="Location image" width="350" height="240">
+                                        </a>
                                         <div class="pb-3 ps-4 pe-4 pt-4">
                                             <div class="align-items-center d-flex justify-content-between">
                                                 <div class="pb-1 pt-1">
@@ -341,15 +344,12 @@
                                                         </svg>
                                                         <span class="align-middle">Ao Nang, Thailand</span>
                                                     </div>
-                                                </div>
-                                                <a class="btn fav ms-2 p-2 rounded-pill" href="#" aria-label="add to favorite">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em" class="d-block">
+                                                </div><a class="btn fav ms-2 p-2 rounded-pill" href="#" aria-label="add to favorite"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em" class="d-block">
                                                         <g>
                                                             <path fill="none" d="M0 0H24V24H0z"/>
                                                             <path d="M20.243 4.757c2.262 2.268 2.34 5.88.236 8.236l-8.48 8.492-8.478-8.492c-2.104-2.356-2.025-5.974.236-8.236C5.515 3 8.093 2.56 10.261 3.44L6.343 7.358l1.414 1.415L12 4.53l-.013-.014.014.013c2.349-2.109 5.979-2.039 8.242.228z"/>
                                                         </g>
-                                                    </svg>
-                                                </a>
+                                                    </svg></a>
                                             </div>
                                             <hr/>
                                             <div class="align-items-center d-flex justify-content-between">
@@ -393,7 +393,7 @@
                                         </div>                                         
                                     </div>                                     
                                 </div>
-                                <div class="pb-3 pt-3"> 
+                                <!-- <div class="pb-3 pt-3"> 
                                     <div class="border"> <a href="#" class="d-block"><img src="https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixid=MXwyMDkyMnwwfDF8c2VhcmNofDkxfHxjaGljYWdvJTIwaG90ZWx8ZW58MHx8fA&ixlib=rb-1.2.1q=85&fm=jpg&crop=faces&cs=srgb&w=350&h=240&fit=crop" class="img-fluid w-100" alt="Location image" width="350" height="240"></a>
                                         <div class="pb-3 ps-4 pe-4 pt-4">
                                             <div class="align-items-center d-flex justify-content-between">
@@ -682,14 +682,14 @@
                                             </div>
                                         </div>                                         
                                     </div>                                     
-                                </div>                                 
+                                </div>                                  -->
                             </div>
-                            <div class="pb-3 pt-3 text-center">
+                            <!-- <div class="pb-3 pt-3 text-center">
                                 <a class="align-items-center btn btn-primary d-inline-flex pe-3 ps-3 rounded-pill" href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.25em" height="1.25em" class="me-2">
                                         <path fill="none" d="M0 0h24v24H0z"/>
                                         <path d="M5.463 4.433A9.961 9.961 0 0 1 12 2c5.523 0 10 4.477 10 10 0 2.136-.67 4.116-1.81 5.74L17 12h3A8 8 0 0 0 6.46 6.228l-.997-1.795zm13.074 15.134A9.961 9.961 0 0 1 12 22C6.477 22 2 17.523 2 12c0-2.136.67-4.116 1.81-5.74L7 12H4a8 8 0 0 0 13.54 5.772l.997 1.795z"/>
                                     </svg><span>Load More</span></a>
-                            </div>                             
+                            </div>                              -->
                         </div>
                     </div>                     
                 </div>                 
@@ -1043,25 +1043,25 @@
             })
         </script>
         <script>
-            const spinner = `<svg id="loading-spinner" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 50 50">
+            function spinner(dimension = 25) {
+            return `<svg id="loading-spinner" xmlns="http://www.w3.org/2000/svg" width="${dimension}" height="${dimension}" viewBox="0 0 50 50">
                                 <circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke="#3498db">
                                     <animate attributeName="r" from="20" to="0" dur="1s" begin="0s" repeatCount="indefinite" />
                                     <animate attributeName="stroke-opacity" from="1" to="0" dur="1s" begin="0s" repeatCount="indefinite" />
                                 </circle>
                             </svg>`;
+            }
         </script>
 
         <script>
             jQuery(document).ready(function ($) {
-                // Attach the submitForm function to the form's submit event
+
+                // fetch data without any params on page load;
+                fetchHotelData({}); 
+
                 $('#filterForm_llw').submit(function (event) {
                     // Prevent the default form submission
                     event.preventDefault();
-
-
-                    var originalButtonText = $('#filter_btn').text();
-
-                    console.log({originalButtonText});
 
                     // Collect form data
                     var formData = {
@@ -1085,7 +1085,16 @@
                             terrace_patio: $('#check_pat').prop('checked') ? 1 : 0,
                             restaurant: $('#check_rst').prop('checked') ? 1 : 0,
                         }
-                    };    
+                    };  
+
+                    fetchHotelData(formData);
+
+                });
+
+                function fetchHotelData(formData) {
+
+                    var originalButtonText = $('#filter_btn').text();
+                    
                     // Make AJAX request
 
                     $.ajax({
@@ -1094,19 +1103,25 @@
                         data: formData,
                         dataType: 'json',
                         beforeSend: function () {
-                            $('#filter_btn').html(`${spinner} Filtering...`);
+                            $('#loader-spinner').show();
+                            $('#grids').hide();
+                            $('#filter_btn').html(`${spinner(25)} Filtering...`);
+                            $('#loader-spinner').html(`${spinner(150)} <h2>Loading...</h2>`);
                         },
                         success: function (data) {
                             console.log('Success:', data);
+                            updateDisplay(data);
                         },
                         error: function (error) {
-                            console.error('Error:', error);
+                            $('#error').show();
                         },
                         complete: function () {
                             $('#filter_btn').html(originalButtonText);
+                            $('#loader-spinner').hide();
+                            $('#grids').show();
                         }
                     });
-                });
+                };
             });
             
         </script>

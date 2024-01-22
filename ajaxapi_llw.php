@@ -109,7 +109,7 @@ if ($conn->connect_error) {
 
 
 $searchKeywords = $_POST['keyword'];
-$category       = (int) $_POST['category'];
+$category       = $_POST['category'];
 $location       = $_POST['location'];
 $tags           = $_POST['tags'];
 
@@ -129,7 +129,7 @@ if ($searchKeywords) {
 
 
 
-if ($category) {
+if (!empty($category)) {
   $conditions[] = "category = $category";
 }
 
