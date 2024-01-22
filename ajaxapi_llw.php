@@ -80,10 +80,10 @@ function checkImage($type, $id, $fileName) {
 
 
 
-$farms = getTable_llw('farm');
-foreach($farms as $farm) {
-  $farm->profileImage = checkImage('farms', $farm->farm_id, 'profile');
-}
+// $farms = getTable_llw('farm');
+// foreach($farms as $farm) {
+//   $farm->profileImage = checkImage('farms', $farm->farm_id, 'profile');
+// }
 // require('/home/veldtuoy/llw_php/llw_config.php');
 //please remove me
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -195,6 +195,9 @@ while ($row = $sqlresult->fetch_assoc()) {
 $data = [];
 $i = 0;
 foreach ($farms as $farm) {
+  $farms[$i]['profile_image'] = checkImage('farms', $farm->farm_id, 'profile');
+
+
   $averageQuery = $conn->query("SELECT AVG(star_rating) AS average_rating FROM farm_ratings WHERE farm_id = ". $farm['farm_id']);
   $averageResult = $averageQuery->fetch_assoc();
   $farms[$i]['average_rating'] = $averageResult['average_rating'] ?? 0;
