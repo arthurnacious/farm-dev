@@ -85,9 +85,9 @@
                                     <div class="align-items-center d-flex justify-content-between">
                                         <div class="pb-1 pt-1">
                                             <span class="me-1 currentcolor">
-                                                ${generateStarRating(item.reviews_number)}
+                                                ${generateStarRating(roundToNearestHalf(item.average_rating))}
                                             </span>
-                                            <span class="align-middle">${item.reviews_number}</span>
+                                            <span class="align-middle">${roundToNearestHalf(item.average_rating)}</span>
                                         </div>
                                         <span class="fw-bold pb-1 pt-1">R${item.price}</span>
                                     </div>
@@ -1118,6 +1118,8 @@
                                                 </svg>`;
 
             function generateStarRating(ratingsAverage) {
+
+                
                 let ratingHTML = '';
 
                 // Use a switch case to determine the star rating
@@ -1160,7 +1162,11 @@
                 }
 
                 return ratingHTML;
-                }
+            }
+
+            function roundToNearestHalf(value) {
+                return Math.round(value * 2) / 2;
+            }
         </script>
     </body>
 </html>
