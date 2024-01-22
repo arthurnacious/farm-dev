@@ -95,4 +95,4 @@ function removeFromUserFavorites(farmID, userId) {
   };
 
   xhr.send(`farm_Id=${encodeURIComponent(farmID)}&userId=${encodeURIComponent(userId)}`);
-}
+};

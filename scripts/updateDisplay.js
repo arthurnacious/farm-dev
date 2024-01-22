@@ -43,7 +43,5 @@ function updateDisplay(farms) {
       `;
 
       displayContainer.innerHTML += farmHTML;
-
-      doc
   });
 }
