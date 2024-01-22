@@ -1024,91 +1024,91 @@
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
         <script>
            // Initialize the map
-    var map = L.map('map').setView([-29.0789923, 24.5010161], 5);
+            var map = L.map('map').setView([-29.0789923, 24.5010161], 5);
 
-    // Add a tile layer
-    L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+            // Add a tile layer
+            L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
 
-    // Add a marker
-    L.marker([-29.0789923, 24.5010161]).addTo(map)
-        .bindPopup('A sample marker!')
-        .openPopup();
-</script>
+            // Add a marker
+            L.marker([-29.0789923, 24.5010161]).addTo(map)
+                .bindPopup('A sample marker!')
+                .openPopup();
+        </script>
         <script>
-    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-    return new bootstrap.Popover(popoverTriggerEl);
-})
-</script>
-<script>
-    const spinner = `<svg id="loading-spinner" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 50 50">
-                        <circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke="#3498db">
-                            <animate attributeName="r" from="20" to="0" dur="1s" begin="0s" repeatCount="indefinite" />
-                            <animate attributeName="stroke-opacity" from="1" to="0" dur="1s" begin="0s" repeatCount="indefinite" />
-                        </circle>
-                    </svg>`;
-</script>
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl);
+            })
+        </script>
+        <script>
+            const spinner = `<svg id="loading-spinner" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke="#3498db">
+                                    <animate attributeName="r" from="20" to="0" dur="1s" begin="0s" repeatCount="indefinite" />
+                                    <animate attributeName="stroke-opacity" from="1" to="0" dur="1s" begin="0s" repeatCount="indefinite" />
+                                </circle>
+                            </svg>`;
+        </script>
 
-<script>
-    jQuery(document).ready(function ($) {
-        // Attach the submitForm function to the form's submit event
-        $('#filterForm_llw').submit(function (event) {
-            // Prevent the default form submission
-            event.preventDefault();
+        <script>
+            jQuery(document).ready(function ($) {
+                // Attach the submitForm function to the form's submit event
+                $('#filterForm_llw').submit(function (event) {
+                    // Prevent the default form submission
+                    event.preventDefault();
 
 
-            var originalButtonText = $('#filter_btn').text();
+                    var originalButtonText = $('#filter_btn').text();
 
-            console.log({originalButtonText});
+                    console.log({originalButtonText});
 
-            // Collect form data
-            var formData = {
-                keyword: $('#search_keywords').val(),
-                location: $('#search_location').val(),
-                category: $('#searchCategory').val(),
-                radius: $('#customRange1').val(),
-                tags: {
-                    atm_on_site: $('#check_atm').prop('checked') ? 1 : 0,
-                    free_wifi: $('#check_wfi').prop('checked') ? 1 : 0,
-                    housekeeping: $('#check_hsk').prop('checked') ? 1 : 0,
-                    dstv: $('#check_dtv').prop('checked') ? 1 : 0,
-                    fitness_center: $('#check_fit').prop('checked') ? 1 : 0,
-                    aircon: $('#check_air').prop('checked') ? 1 : 0,
-                    gift_shop: $('#check_gft').prop('checked') ? 1 : 0,
-                    meeting_hall: $('#check_hal').prop('checked') ? 1 : 0,
-                    pet_allowed: $('#check_pet').prop('checked') ? 1 : 0,
-                    swimming_pool: $('#scheck_swm').prop('checked') ? 1 : 0,
-                    free_parking: $('#check_prk').prop('checked') ? 1 : 0,
-                    bar_lounge: $('#check_bar').prop('checked') ? 1 : 0,
-                    terrace_patio: $('#check_pat').prop('checked') ? 1 : 0,
-                    restaurant: $('#check_rst').prop('checked') ? 1 : 0,
-                }
-            };    
-            // Make AJAX request
+                    // Collect form data
+                    var formData = {
+                        keyword: $('#search_keywords').val(),
+                        location: $('#search_location').val(),
+                        category: $('#searchCategory').val(),
+                        radius: $('#customRange1').val(),
+                        tags: {
+                            atm_on_site: $('#check_atm').prop('checked') ? 1 : 0,
+                            free_wifi: $('#check_wfi').prop('checked') ? 1 : 0,
+                            housekeeping: $('#check_hsk').prop('checked') ? 1 : 0,
+                            dstv: $('#check_dtv').prop('checked') ? 1 : 0,
+                            fitness_center: $('#check_fit').prop('checked') ? 1 : 0,
+                            aircon: $('#check_air').prop('checked') ? 1 : 0,
+                            gift_shop: $('#check_gft').prop('checked') ? 1 : 0,
+                            meeting_hall: $('#check_hal').prop('checked') ? 1 : 0,
+                            pet_allowed: $('#check_pet').prop('checked') ? 1 : 0,
+                            swimming_pool: $('#scheck_swm').prop('checked') ? 1 : 0,
+                            free_parking: $('#check_prk').prop('checked') ? 1 : 0,
+                            bar_lounge: $('#check_bar').prop('checked') ? 1 : 0,
+                            terrace_patio: $('#check_pat').prop('checked') ? 1 : 0,
+                            restaurant: $('#check_rst').prop('checked') ? 1 : 0,
+                        }
+                    };    
+                    // Make AJAX request
 
-            $.ajax({
-                url: 'ajaxapi_llw.php',
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                beforeSend: function () {
-                    $('#filter_btn').html(`${spinner} Filtering...`);
-                },
-                success: function (data) {
-                    console.log('Success:', data);
-                },
-                error: function (error) {
-                    console.error('Error:', error);
-                },
-                complete: function () {
-                    $('#filter_btn').html(originalButtonText);
-                }
+                    $.ajax({
+                        url: 'ajaxapi_llw.php',
+                        type: 'POST',
+                        data: formData,
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $('#filter_btn').html(`${spinner} Filtering...`);
+                        },
+                        success: function (data) {
+                            console.log('Success:', data);
+                        },
+                        error: function (error) {
+                            console.error('Error:', error);
+                        },
+                        complete: function () {
+                            $('#filter_btn').html(originalButtonText);
+                        }
+                    });
+                });
             });
-        });
-    });
-    
-    </script>
+            
+        </script>
     </body>
 </html>
