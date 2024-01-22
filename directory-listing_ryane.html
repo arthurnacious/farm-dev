@@ -89,7 +89,7 @@
                                             </span>
                                             <span class="align-middle">${roundToNearestHalf(item.average_rating)}</span>
                                         </div>
-                                        <span class="fw-bold pb-1 pt-1">R${item.price}</span>
+                                        ${item.price ? `<span class="fw-bold pb-1 pt-1">From R${item.price.from}</span>` : null }
                                     </div>
                                 </div>                                         
                             </div>                                     
@@ -1080,11 +1080,11 @@
                             $('#loader-spinner').html(`${spinner(150)} <h2>Loading...</h2>`);
                         },
                         success: function (data) {
-                            console.log('Success:', data);
                             updateDisplay(data);
                         },
                         error: function (error) {
                             $('#error').show();
+                            console.warn(error)
                         },
                         complete: function () {
                             $('#filter_btn').html(originalButtonText);
