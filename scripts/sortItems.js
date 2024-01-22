@@ -1,5 +1,4 @@
 function sortItems(option, farms) {
-  console.log(option);
   switch (option) {
       case "Name":
           farms.sort((a, b) => a.farm_name.localeCompare(b.farm_name));
