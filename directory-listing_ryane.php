@@ -684,7 +684,13 @@
             jQuery(document).ready(function ($) {
 
                 // fetch data without any params on page load;
-                fetchHotelData(); 
+                fetchHotelData({
+                        location: "<?=$_GET['search_location']?>",
+                        check_in: "<?=$_GET['check_in']?>",
+                        check_out: "<?=$_GET['check_out']?>",
+                        hunters: "<?=$_GET['hunters']?>",
+                        guests: "<?=$_GET['guests']?>",
+                    }); 
 
                 $('#filterForm_llw').submit(function (event) {
                     // Prevent the default form submission
