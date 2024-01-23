@@ -53,11 +53,11 @@
                     </div>
                     <div class="pb-1 pt-1 row">
                         <div class="bg-dark bg-opacity-50 col-lg-7 col-xl-6 col-xxl-5 pb-1 pt-2" style="font-family: 'Roboto', sans-serif; border-radius: 42px;">
-                            <form> 
+                            <form action="/directory-listing_ryane.html" method="get"> 
                                 <div class="gx-2 row">
                                     <div class="col-12 col-sm-9 col-xl-7 mb-3"> 
-                                        <label for="from" class="col-form-label-lg form-label">Step 1: Where do you want to go?</label>
-                                        <input type="text" class="form-control form-control-lg ps-4 pe-4 rounded-pill" placeholder="Province / District / Town" id="SearchFarmLocation"> 
+                                        <label for="search_keywords" class="col-form-label-lg form-label">Step 1: Where do you want to go?</label>
+                                        <input id="search_keywords" type="text" name="search_keywords" class="form-control form-control-lg ps-4 pe-4 rounded-pill" placeholder="Province / District / Town" id="SearchFarmLocation"> 
                                     </div>
                                 </div>
                                 <div class="row">
@@ -67,7 +67,7 @@
                                     <div class="col-lg-5 col-md-4 col-sm-5 col-xl-5 mb-1"> 
                                         <!--<input type="text" class="form-control form-control-lg ps-4 pe-4 rounded-pill" placeholder="What are you looking for?"> -->                                         
                                         <label for="to" class="col-form-label-lg form-label">Check in</label>
-                                        <input type="date" class="form-control form-control-lg ps-4 pe-4 input-group date rounded-pill" placeholder="When must your trip start?" id="SelectFromDate1">
+                                        <input name="" type="date" class="form-control form-control-lg ps-4 pe-4 input-group date rounded-pill" placeholder="When must your trip start?" id="SelectFromDate1">
                                         <div class="input-group date" id="SelectFromDate2"> 
 </div>                                         
                                     </div>
