@@ -50,57 +50,65 @@
                 let displayContainer = document.getElementById('grids');
                 displayContainer.innerHTML = '';
 
-                items.forEach(item => {
-                    let itemHTML = `
-                        <div class="pb-3 pt-3"> 
-                            <div class="border"> <a href="#" class="d-block"><img src="${item.farm_image}" class="img-fluid w-100" alt="Location image" width="350" height="240"></a>
-                                <div class="pb-3 ps-4 pe-4 pt-4">
-                                    <div class="align-items-center d-flex justify-content-between">
-                                        <div class="pb-1 pt-1">
-                                            <a href="/directory-details.php?farm=${item.farm_id}" class="link-dark text-decoration-none"><h2 class="h5 mb-1">${item.farm_name}</h2></a>
-                                            <div>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em" class="me-1 location text-primary">
+                if(items.length > 0) {
+                    items.forEach(item => {
+                        let itemHTML = `
+                            <div class="pb-3 pt-3"> 
+                                <div class="border"> <a href="#" class="d-block"><img src="${item.farm_image}" class="img-fluid w-100" alt="Location image" width="350" height="240"></a>
+                                    <div class="pb-3 ps-4 pe-4 pt-4">
+                                        <div class="align-items-center d-flex justify-content-between">
+                                            <div class="pb-1 pt-1">
+                                                <a href="/directory-details.php?farm=${item.farm_id}" class="link-dark text-decoration-none"><h2 class="h5 mb-1">${item.farm_name}</h2></a>
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em" class="me-1 location text-primary">
+                                                        <g>
+                                                            <path fill="none" d="M0 0h24v24H0z"/>
+                                                            <path d="M18.364 17.364L12 23.728l-6.364-6.364a9 9 0 1 1 12.728 0zM12 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                                                        </g>
+                                                    </svg>
+                                                    <span class="align-middle">${item.district}</span>
+                                                </div>
+                                            </div>
+                                            <a class="btn fav ms-2 p-2 rounded-pill" href="/directory-details.php?farm=${item.farm_id}" aria-label="add to favorite">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em" class="d-block">
                                                     <g>
-                                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                                        <path d="M18.364 17.364L12 23.728l-6.364-6.364a9 9 0 1 1 12.728 0zM12 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                                                        <path fill="none" d="M0 0H24V24H0z"/>
+                                                        <path d="M20.243 4.757c2.262 2.268 2.34 5.88.236 8.236l-8.48 8.492-8.478-8.492c-2.104-2.356-2.025-5.974.236-8.236C5.515 3 8.093 2.56 10.261 3.44L6.343 7.358l1.414 1.415L12 4.53l-.013-.014.014.013c2.349-2.109 5.979-2.039 8.242.228z"/>
                                                     </g>
                                                 </svg>
-                                                <span class="align-middle">${item.district}</span>
+                                            </a>
+                                        </div>
+                                        <hr/>
+                                        <div class="align-items-center d-flex justify-content-between">
+                                            <div class="pb-1 pt-1">
+                                                <span class="me-1 currentcolor">
+                                                    ${generateStarRating(roundToNearestHalf(item.average_rating))}
+                                                </span>
+                                                <span class="align-middle">${roundToNearestHalf(item.average_rating)}</span>
+                                                <span class="align-middle">
+                                                    (
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                                    ${item.count_rating}
+                                                    )
+                                                </span>
                                             </div>
+                                            <span class="fw-bold pb-1 pt-1">From R${item.min_price}</span>
                                         </div>
-                                        <a class="btn fav ms-2 p-2 rounded-pill" href="/directory-details.php?farm=${item.farm_id}" aria-label="add to favorite">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em" class="d-block">
-                                                <g>
-                                                    <path fill="none" d="M0 0H24V24H0z"/>
-                                                    <path d="M20.243 4.757c2.262 2.268 2.34 5.88.236 8.236l-8.48 8.492-8.478-8.492c-2.104-2.356-2.025-5.974.236-8.236C5.515 3 8.093 2.56 10.261 3.44L6.343 7.358l1.414 1.415L12 4.53l-.013-.014.014.013c2.349-2.109 5.979-2.039 8.242.228z"/>
-                                                </g>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                    <hr/>
-                                    <div class="align-items-center d-flex justify-content-between">
-                                        <div class="pb-1 pt-1">
-                                            <span class="me-1 currentcolor">
-                                                ${generateStarRating(roundToNearestHalf(item.average_rating))}
-                                            </span>
-                                            <span class="align-middle">${roundToNearestHalf(item.average_rating)}</span>
-                                            <span class="align-middle">
-                                                (
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                                ${item.count_rating}
-                                                )
-                                            </span>
-                                        </div>
-                                        <span class="fw-bold pb-1 pt-1">From R${item.min_price}</span>
-                                    </div>
-                                </div>                                         
-                            </div>                                     
-                        </div>
-                    `;
-                    
-                    // Append the new HTML to the container
-                    displayContainer.innerHTML += itemHTML;
-                });
+                                    </div>                                         
+                                </div>                                     
+                            </div>
+                        `;
+                        
+                        // Append the new HTML to the container
+                        displayContainer.innerHTML += itemHTML;
+                    });
+                }else{
+                    displayContainer.innerHTML =    `<div class="pb-3 pt-3" id="empty">
+                                                        <div class="alert alert-info" role="alert">
+                                                            No farm(s) with those serach params.
+                                                        </div>
+                                                    </div>`;
+                }
             }
     
             window.onload = function() {
@@ -302,7 +310,11 @@
                                 </div>
                             </div>
                             <div id="loader-spinner"></div>
-                            <div id="error" style="display: none;"> An error has occured...</div>
+                            <div id="error" style="display: none;">
+                                <div class="alert alert-warning" role="alert">
+                                    An error has occured...
+                                </div>
+                            </div>
                             <div
                                 class="justify-content-center row row-cols-md-2"
                                 id="grids"
@@ -747,12 +759,14 @@
                             $('#loader-spinner').html(`${spinner(150)} <h2>Loading...</h2>`);
                         },
                         success: function (data) {
+                            $('#empty').show();
                             console.log({data});
                             items = data
                             updateDisplay(items);
                         },
                         error: function (error) {
                             $('#error').show();
+                            $('#empty').hide();
                             console.warn({error: error.message});
                         },
                         complete: function () {

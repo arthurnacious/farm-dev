@@ -89,6 +89,7 @@ $check_in       = $_POST['check_in'];
 $check_out      = $_POST['check_out'];
 $hunters        = $_POST['hunters'];
 $guests         = $_POST['guests'];
+$capacity = (int) $hunters + (int) $guests;
 
 
 $tagNames = [];
@@ -119,12 +120,15 @@ $sql = "SELECT f.*,
         LEFT JOIN reference_features rf ON ff.feature_id = rf.id
         LEFT JOIN farm_ratings fr ON f.farm_id = fr.farm_id
         LEFT JOIN accommodation_units au ON f.farm_id = au.farm_id";
+$sql .= !empty($check_out) ? " LEFT JOIN bookings b ON f.farm_id = b.farm_id AND b.booking_date_to <= ".$check_out : null;
 $sql .= !empty($featureIds) ? " WHERE (rf.id IN (" . implode(", ", $featureIds) . ")) " : null;
 $sql .= !empty($location) ? " AND f.district LIKE '%" . $location . "%'" : null;
 $sql .= !empty($searchKeywords) ? " AND f.farm_name LIKE '%" . $searchKeywords . "%'" : null;
 $sql .= !empty($category) ? " AND f.category = " . (int) $category : null;
+$sql .= !empty($check_out) ? " AND (b.farm_id IS NULL OR b.booking_date_to <= ". $check_out .")" : null;
 $sql .= " GROUP BY f.farm_id";
 $sql .= " ORDER BY f.farm_id";
+
 
 
 $result = $conn->query($sql);
