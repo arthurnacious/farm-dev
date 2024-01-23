@@ -122,6 +122,7 @@ $sql = "SELECT f.*,
 $sql .= !empty($featureIds) ? " WHERE (rf.id IN (" . implode(", ", $featureIds) . ")) " : null;
 $sql .= !empty($location) ? " AND f.district LIKE '%" . $location . "%'" : null;
 $sql .= !empty($searchKeywords) ? " AND f.farm_name LIKE '%" . $searchKeywords . "%'" : null;
+$sql .= !empty($category) ? " AND f.category = " . (int) $category : null;
 $sql .= " GROUP BY f.farm_id";
 $sql .= " ORDER BY f.farm_id";
 
