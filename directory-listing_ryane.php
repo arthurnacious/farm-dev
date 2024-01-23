@@ -168,7 +168,7 @@
                                         </span>
                                     </div>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="border-end-0 form-control p-3"  name="search_location" id="search_location" placeholder="Location" aria-label="Enter Location" aria-describedby="location-input">
+                                        <input type="text" class="border-end-0 form-control p-3" value="<?=$_GET['search_location']?>" name="search_location" id="search_location" placeholder="Location" aria-label="Enter Location" aria-describedby="location-input">
                                         <span class="bg-white input-group-text pe-3 ps-3" id="location-input">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em">
                                                 <path fill="none" d="M0 0h24v24H0z"/>
