@@ -23,31 +23,14 @@ function getTable_llw($table) {
   ));
 
 
-
-
   // Execute cURL session and store the response
   $response = curl_exec($curl);
-
-
-
-
   // Decode the JSON response into an associative array
   $responseArray = json_decode($response, true);
-
-
-
-
   // Check for cURL errors
   $err = curl_error($curl);
-
-
-
-
   // Close cURL session
   curl_close($curl);
-
-
-
 
   // Check if there was an error during the cURL request
   if ($err) return false;
@@ -58,9 +41,6 @@ function getTable_llw($table) {
       return $objectArray;
   }
 }
-
-
-
 
 function checkImage($type, $id, $fileName) {
   $directory = "/home/veldtuoy/public_html/dev/photos/{$type}/{$id}/";
@@ -77,13 +57,6 @@ function checkImage($type, $id, $fileName) {
   return $fullFileName;
 }
 
-
-
-
-// $farms = getTable_llw('farm');
-// foreach($farms as $farm) {
-//   $farm->profileImage = checkImage('farms', $farm->farm_id, 'profile');
-// }
 // require('/home/veldtuoy/llw_php/llw_config.php');
 //please remove me
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -93,10 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $db_host = 'localhost';
 $db_user = 'root';
 $db_pass = 'Pass1234';
-$db_name = 'farm';
+// $db_name = 'farm';
 
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-
 
 
 
@@ -107,7 +79,6 @@ if ($conn->connect_error) {
 
 
 
-
 $searchKeywords = $_POST['keyword'];
 $category       = $_POST['category'];
 $location       = $_POST['location'];
@@ -115,7 +86,8 @@ $tags           = $_POST['tags'];
 $on_load        = $_POST['load'];
 
 
-if(!isset($on_load)){ //no search
+if (count($_POST) !== 0) { //with search
+
   $tagNames = [];
   foreach ($tags as $key => $value) {
     if (isset($tags[$key]) && $tags[$key] !== '') {
@@ -149,14 +121,26 @@ if(!isset($on_load)){ //no search
     }
 
     if(count($farmIds) > 0){
-      $farmSql = "SELECT * FROM farm where farm_id IN (". implode(", ", $farmIds) . ")";
+      $ands = '';
+
+      if($searchKeywords != '')
+      {
+        $ands .= " AND farm_name LIKE '%". $searchKeywords ."%'";
+      }
+
+      if($location != '')
+      {
+        $ands .= " AND district like '%". $location ."%'";
+      }
+
+      $farmSql = "SELECT * FROM farm where farm_id IN (". implode(", ", $farmIds) . ")" . $ands;
     }
   }
 
   $result = $conn->query($farmSql);
 
 
-}else{
+}else{ //without search
 
   $sqlStmnt = "SELECT * FROM farm";
   $result = $conn->query($sqlStmnt);
@@ -175,9 +159,10 @@ foreach ($farms as $farm) {
   $farms[$i]['profile_image'] = checkImage('farms', $farm->farm_id, 'profile');
 
   // average_rating
-  $averageQuery = $conn->query("SELECT AVG(star_rating) AS average_rating FROM farm_ratings WHERE farm_id = ". $farm['farm_id']);
+  $averageQuery = $conn->query("SELECT AVG(star_rating) AS average_rating, COUNT(DISTINCT(hunter_id)) as count_rating  FROM farm_ratings WHERE farm_id = ". $farm['farm_id']);
   $averageResult = $averageQuery->fetch_assoc();
   $farms[$i]['average_rating'] = $averageResult['average_rating'] ?? 0;
+  $farms[$i]['count_rating'] = $averageResult['count_rating'] ?? 0;
 
 
   // price from
