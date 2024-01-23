@@ -2,7 +2,15 @@
 $responseData = $_POST;
 
 
+function escapeLineBreaksAndSpaces($inputString): string {
+  // Remove \r\n
+  $outputString = str_replace("\r\n", '', $inputString);
 
+  // Remove multiple spaces
+  $outputString = preg_replace('/\s+/', ' ', $outputString);
+
+  return $outputString;
+}
 
 function getTable_llw($table) {
   $curl = curl_init();

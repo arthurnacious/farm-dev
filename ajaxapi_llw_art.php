@@ -1,7 +1,15 @@
 <?php
 $responseData = $_POST;
 
+function escapeLineBreaksAndSpaces($inputString): string {
+  // Remove \r\n
+  $outputString = str_replace("\r\n", '', $inputString);
 
+  // Remove multiple spaces
+  $outputString = preg_replace('/\s+/', ' ', $outputString);
+
+  return $outputString;
+}
 
 
 function getTable_llw($table) {
@@ -94,7 +102,7 @@ $capacity = (int) $hunters + (int) $guests;
 
 $tagNames = [];
 foreach ($tags as $key => $value) {
-    if (isset($tags[$key]) && $tags[$key] !== '') {
+    if (isset($tags[$key]) && $tags[$key] !== "0" && $tags[$key] !== '' && $tags[$key] !== 0) {
         $tagNames[] = ucwords(str_replace("_", " ", $key));
     }
 }
@@ -104,32 +112,58 @@ if (!empty($tagNames)) {
   $featureSql = "SELECT id FROM reference_features WHERE english IN ('" . implode("', '", $tagNames) . "')";
   $featureResult = $conn->query($featureSql);
 
+  $featureIds = [];
   while ($row = $featureResult->fetch_assoc()) {
       $featureIds[] = $row['id'];
   }
 }
 
 $sql = "SELECT f.*, 
-        COALESCE(AVG(fr.star_rating), 0) AS average_rating, 
-        COUNT(DISTINCT fr.hunter_id) as count_rating,
-        AVG(au.price) AS avg_price, 
-        MIN(au.price) AS min_price, 
-        MAX(au.price) AS max_price
-        FROM farm f
-        LEFT JOIN farm_features ff ON f.farm_id = ff.farm_id
-        LEFT JOIN reference_features rf ON ff.feature_id = rf.id
-        LEFT JOIN farm_ratings fr ON f.farm_id = fr.farm_id
-        LEFT JOIN accommodation_units au ON f.farm_id = au.farm_id";
-$sql .= !empty($check_out) ? " LEFT JOIN bookings b ON f.farm_id = b.farm_id AND b.booking_date_to <= ".$check_out : null;
-$sql .= !empty($featureIds) ? " WHERE (rf.id IN (" . implode(", ", $featureIds) . ")) " : null;
-$sql .= !empty($location) ? " AND f.district LIKE '%" . $location . "%'" : null;
-$sql .= !empty($searchKeywords) ? " AND f.farm_name LIKE '%" . $searchKeywords . "%'" : null;
-$sql .= !empty($category) ? " AND f.category = " . (int) $category : null;
-$sql .= !empty($check_out) ? " AND (b.farm_id IS NULL OR b.booking_date_to <= ". $check_out .")" : null;
-$sql .= " GROUP BY f.farm_id";
-$sql .= " ORDER BY f.farm_id";
+  COALESCE(AVG(fr.star_rating), 0) AS average_rating, 
+  COUNT(DISTINCT fr.hunter_id) as count_rating,
+  AVG(au.price) AS avg_price, 
+  MIN(au.price) AS min_price, 
+  MAX(au.price) AS max_price
+  FROM farm f
+  LEFT JOIN farm_features ff ON f.farm_id = ff.farm_id
+  LEFT JOIN reference_features rf ON ff.feature_id = rf.id
+  LEFT JOIN farm_ratings fr ON f.farm_id = fr.farm_id
+  LEFT JOIN accommodation_units au ON f.farm_id = au.farm_id";
+
+  // Add WHERE clause if any of the conditions are present
+  $conditions = [];
+
+  if (!empty($check_out)) {
+      $conditions[] = "b.booking_date_to <= " . $check_out;
+  }
+
+  if (!empty($featureIds) && count($featureIds) > 0) {
+      $conditions[] = "(rf.id IN (" . implode(", ", $featureIds) . "))";
+  }
+
+  if (!empty($location)) {
+      $conditions[] = "f.district LIKE '%" . $location . "%'";
+  }
+
+  if (!empty($searchKeywords)) {
+      $conditions[] = "f.farm_name LIKE '%" . $searchKeywords . "%'";
+  }
+
+  if (!empty($category)) {
+      $conditions[] = "f.category = " . (int) $category;
+  }
+
+  if (!empty($conditions)) {
+      $sql .= " WHERE " . implode(" AND ", $conditions);
+  }
+
+  $sql .= " GROUP BY f.farm_id";
+  $sql .= " ORDER BY f.farm_id";
 
 
+
+// echo json_encode(escapeLineBreaksAndSpaces($sql));
+// exit();
 
 $result = $conn->query($sql);
 
