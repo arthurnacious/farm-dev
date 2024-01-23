@@ -743,7 +743,7 @@
                             $('#loader-spinner').html(`${spinner(150)} <h2>Loading...</h2>`);
                         },
                         success: function (data) {
-                            console.log(data);
+                            console.log({data});
                             items = data
                             updateDisplay(items);
                         },

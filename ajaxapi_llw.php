@@ -95,49 +95,56 @@ if (count($_POST) !== 0) { //with search
     }
   }
 
+  if(count($tagNames) > 0){
+    $sqlStmnt = "SELECT id FROM reference_features WHERE english IN ('" . implode("', '", array_map(function($tagName) {
+      global $conn;
+      return mysqli_real_escape_string($conn, $tagName);
+    }, $tagNames)) . "')";
+  
 
-  $sqlStmnt = "SELECT id FROM reference_features WHERE english IN ('" . implode("', '", array_map(function($tagName) {
-    global $conn;
-    return mysqli_real_escape_string($conn, $tagName);
-  }, $tagNames)) . "')";
+    $result = $conn->query($sqlStmnt);
 
-  $result = $conn->query($sqlStmnt);
+    $featureId = [];
+    while ($row = $result->fetch_assoc()) {
+        $featureId[] = $row['id'];
+    }
 
-  $featureId = [];
-  while ($row = $result->fetch_assoc()) {
-      $featureId[] = $row['id'];
-  }
+    $farmSql = "SELECT * FROM farm where farm_id = 0"; // will return null if there is no farm features found...
 
-  $farmSql = "SELECT * FROM farm where farm_id = 0"; // will return null if there is no farm features found...
+    if(count($featureId) > 0){
+      $farmFeat = "SELECT farm_id FROM farm_features where feature_id IN (". implode(", ", $featureId) . ")";
+      
+      $farmFetRes = $conn->query($farmFeat);
 
-  if(count($featureId) > 0){
-    $farmFeat = "SELECT farm_id FROM farm_features where feature_id IN (". implode(", ", $featureId) . ")";
+      $farmIds = [];
+      while ($row = $farmFetRes->fetch_assoc()) {
+          $farmIds[] = $row['farm_id'];
+      }
+
+      if(count($farmIds) > 0){
+        $ands = '';
+
+        if($searchKeywords != '')
+        {
+          $ands .= " AND farm_name LIKE '%". $searchKeywords ."%'";
+        }
+
+        if($location != '')
+        {
+          $ands .= " AND district like '%". $location ."%'";
+        }
+
+        $farmSql = "SELECT * FROM farm where farm_id IN (". implode(", ", $farmIds) . ")" . $ands;
+      }
+    }
+
+    $result = $conn->query($farmSql);
+  }else{
+    $sqlStmnt = "SELECT * FROM farm WHERE district like '%". $location ."%'";
+    $result = $conn->query($sqlStmnt);
     
-    $farmFetRes = $conn->query($farmFeat);
-
-    $farmIds = [];
-    while ($row = $farmFetRes->fetch_assoc()) {
-        $farmIds[] = $row['farm_id'];
-    }
-
-    if(count($farmIds) > 0){
-      $ands = '';
-
-      if($searchKeywords != '')
-      {
-        $ands .= " AND farm_name LIKE '%". $searchKeywords ."%'";
-      }
-
-      if($location != '')
-      {
-        $ands .= " AND district like '%". $location ."%'";
-      }
-
-      $farmSql = "SELECT * FROM farm where farm_id IN (". implode(", ", $farmIds) . ")" . $ands;
-    }
   }
 
-  $result = $conn->query($farmSql);
 
 
 }else{ //without search
@@ -178,7 +185,7 @@ foreach ($farms as $farm) {
 
 
 $conn->close();
-echo json_encode($farms); // Debugging
+echo json_encode($farms);
 exit();
 
 
