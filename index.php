@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="Pinegrow Web Editor - Directory Bootstrap v5 Template">
+        <meta name="description" content="Pinegrow Web Editor - Directory Bootstrap v5 Template">
         <meta name="author" content="">
         <title>Pinegrow | Bootstrap Blocks Template</title>
         <!-- Bootstrap core CSS -->
@@ -595,7 +595,7 @@
                                             <div id="collapseOne" class="vt-accordion-collapse collapse" aria-labelledby="collapse1" data-bs-parent="#panels1"> 
                                                 <div class="accordion-body"> 
                                                     <div>
-                                                        <form class="row g-3 needs-validation" novalidate method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                                                        <form class="row g-3 needs-validation" novalidate method="post" action="/dev/index.php">
                                                             <div class="col-md-9 col-xl-12">
                                                                 <input type="text" class="form-control rounded-4 registration-fields" id="validationCustom01" value="" required placeholder="First Name">
 
