@@ -110,16 +110,21 @@
                     </button>
                     <div class="collapse navbar-collapse " id="navbarNavDropdown-66"> 
                         <ul class="navbar-nav ms-auto"> 
-                            <li class="nav-item"> <a class="nav-link px-lg-3 py-lg-4 text-light text-nowrap" href="#" data-pgc="hunterregister.modal"> <img src="assets/img/hunter.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninHunter">Hunter: Login/Sign Up </a>
+                            <li class="nav-item">
+                                <a class="nav-link px-lg-3 py-lg-4 text-light text-nowrap" href="#" data-pgc="hunterregister.modal">
+                                    <img src="assets/img/hunter.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninHunter">Hunter: Login/Sign Up
+                                </a>
                             </li>
-                            <li class="nav-item"> <a class="nav-link px-lg-3 py-lg-4 text-light text-nowrap" href="#"><img src="assets/img/farmer.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninFarmer" data-pgc="Farmerregister.Modal">
-                                    Farmer: Login/Sign Up</a> 
+                            <li class="nav-item">
+                                <a class="nav-link px-lg-3 py-lg-4 text-light text-nowrap" href="#">
+                                    <img src="assets/img/farmer.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninFarmer" data-pgc="Farmerregister.Modal">
+                                    Farmer: Login/Sign Up
+                                </a> 
                             </li>
                             <li class="nav-link m-4">
                                 <div class="form-check form-switch text-nowrap">
                                     <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" style="margin-right: 12px;">
-                                    <label class="form-check-label text-white" for="flexSwitchCheckChecked">Switch to Afrikaans
-</label>
+                                    <label class="form-check-label text-white" for="flexSwitchCheckChecked">Switch to Afrikaans</label>
                                 </div>                                 
                             </li>                             
                         </ul>                         
@@ -130,8 +135,7 @@
         <main>
             <section class="bg-dark">
                 <div class="row">
-                    <div class="col-lg-12 col-md-8 col-xl-12" style='border: 1px solid red '>
-</div>
+                    <div class="col-lg-12 col-md-8 col-xl-12" style='border: 1px solid red '></div>
                     <div class="leaflet-map" id="map"></div>
                 </div>
             </section>
@@ -145,19 +149,23 @@
                                 <form id='filterForm_llw'> 
                                     <div class="input-group mb-3">
                                         <input type="text" class="border-end-0 form-control p-3" name="search_keywords" id="search_keywords" placeholder="Looking for?" aria-label="Enter Keyword" aria-describedby="keyword-input">
-                                        <span class="bg-white input-group-text pe-3 ps-3" id="keyword-input"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em">
+                                        <span class="bg-white input-group-text pe-3 ps-3" id="keyword-input">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em">
                                                 <g>
                                                     <path fill="none" d="M0 0h24v24H0z"></path>
                                                     <path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"></path>
                                                 </g>
-                                            </svg></span>
+                                            </svg>
+                                        </span>
                                     </div>
                                     <div class="input-group mb-3">
                                         <input type="text" class="border-end-0 form-control p-3"  name="search_location" id="search_location" placeholder="Location" aria-label="Enter Location" aria-describedby="location-input">
-                                        <span class="bg-white input-group-text pe-3 ps-3" id="location-input"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em">
+                                        <span class="bg-white input-group-text pe-3 ps-3" id="location-input">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em">
                                                 <path fill="none" d="M0 0h24v24H0z"/>
                                                 <path d="M12 23.728l-6.364-6.364a9 9 0 1 1 12.728 0L12 23.728zm4.95-7.778a7 7 0 1 0-9.9 0L12 20.9l4.95-4.95zM12 13a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
-                                            </svg></span>
+                                            </svg>
+                                        </span>
                                     </div>                                     
                                     <div class="mb-3">
                                         <select class="form-select p-3" id="searchCategory">
@@ -1021,7 +1029,7 @@
             jQuery(document).ready(function ($) {
 
                 // fetch data without any params on page load;
-                fetchHotelData({}); 
+                fetchHotelData({load: true}); 
 
                 $('#filterForm_llw').submit(function (event) {
                     // Prevent the default form submission
@@ -1074,12 +1082,13 @@
                             $('#loader-spinner').html(`${spinner(150)} <h2>Loading...</h2>`);
                         },
                         success: function (data) {
+                            console.log(data);
                             items = data
                             updateDisplay(items);
                         },
                         error: function (error) {
                             $('#error').show();
-                            console.warn({error: error.message})
+                            console.warn({error: error.message});
                         },
                         complete: function () {
                             $('#filter_btn').html(originalButtonText);

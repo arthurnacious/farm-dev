@@ -112,53 +112,61 @@ $searchKeywords = $_POST['keyword'];
 $category       = $_POST['category'];
 $location       = $_POST['location'];
 $tags           = $_POST['tags'];
+$on_load        = $_POST['load'];
 
 
+if(!isset($on_load)){ //no search
+  $tagNames = [];
+  foreach ($tags as $key => $value) {
+    if (isset($tags[$key]) && $tags[$key] !== '') {
+      $tagNames[] = ucwords(str_replace("_", " ", $key));
+    }
+  }
 
 
-$sqlStmnt = "SELECT * FROM farm";
-$conditions = [];
+  $sqlStmnt = "SELECT id FROM reference_features WHERE english IN ('" . implode("', '", array_map(function($tagName) {
+    global $conn;
+    return mysqli_real_escape_string($conn, $tagName);
+  }, $tagNames)) . "')";
+
+  $result = $conn->query($sqlStmnt);
+
+  $featureId = [];
+  while ($row = $result->fetch_assoc()) {
+      $featureId[] = $row['id'];
+  }
+
+  $farmSql = "SELECT * FROM farm where farm_id = 0"; // will return null if there is no farm features found...
+
+  if(count($featureId) > 0){
+    $farmFeat = "SELECT farm_id FROM farm_features where feature_id IN (". implode(", ", $featureId) . ")";
+    
+    $farmFetRes = $conn->query($farmFeat);
+
+    $farmIds = [];
+    while ($row = $farmFetRes->fetch_assoc()) {
+        $farmIds[] = $row['farm_id'];
+    }
+
+    if(count($farmIds) > 0){
+      $farmSql = "SELECT * FROM farm where farm_id IN (". implode(", ", $farmIds) . ")";
+    }
+  }
+
+  $result = $conn->query($farmSql);
 
 
+}else{
 
+  $sqlStmnt = "SELECT * FROM farm";
+  $result = $conn->query($sqlStmnt);
 
-if ($searchKeywords) {
-  $conditions[] = "(farm_name LIKE '%$searchKeywords%' OR farm_description_afrikaans LIKE '%$searchKeywords%' OR farm_description_english LIKE '%$searchKeywords%')";
 }
-
-
-if (!empty($category)) {
-  $conditions[] = "category = $category";
-}
-
-
-
-
-if ($location) {
-  $conditions[] = "district LIKE '%$location%'";
-}
-
-
-foreach ($tags as $key => $value) {
-   if (isset($tags[$key]) && $tags[$key] !== '') {
-       $conditions[] = "$key = " . (int) $value;
-   }
-}
-
-
-if (!empty($conditions)) {
-  $sqlStmnt .= " WHERE " . implode(" AND ", $conditions);
-}
-
-$sqlresult = $conn->query($sqlStmnt);
-
-
 
 $farms = [];
-while ($row = $sqlresult->fetch_assoc()) {
+while ($row = $result->fetch_assoc()) {
   $farms[] = $row;
 }
-
 
 $data = [];
 $i = 0;
