@@ -53,7 +53,7 @@
                     </div>
                     <div class="pb-1 pt-1 row">
                         <div class="bg-dark bg-opacity-50 col-lg-7 col-xl-6 col-xxl-5 pb-1 pt-2" style="font-family: 'Roboto', sans-serif; border-radius: 42px;">
-                            <form action="/directory-listing_ryane.html" method="get"> 
+                            <form action="/directory-listing_ryane.php" method="get"> 
                                 <div class="gx-2 row">
                                     <div class="col-12 col-sm-9 col-xl-7 mb-3"> 
                                         <label for="search_keywords" class="col-form-label-lg form-label">Step 1: Where do you want to go?</label>
@@ -66,35 +66,39 @@
                                     </div>
                                     <div class="col-lg-5 col-md-4 col-sm-5 col-xl-5 mb-1"> 
                                         <!--<input type="text" class="form-control form-control-lg ps-4 pe-4 rounded-pill" placeholder="What are you looking for?"> -->                                         
-                                        <label for="to" class="col-form-label-lg form-label">Check in</label>
-                                        <input name="" type="date" class="form-control form-control-lg ps-4 pe-4 input-group date rounded-pill" placeholder="When must your trip start?" id="SelectFromDate1">
+                                        <label for="check_in" class="col-form-label-lg form-label">Check in</label>
+                                        <input name="check_in" id="check_in" type="date" class="form-control form-control-lg ps-4 pe-4 input-group date rounded-pill" placeholder="When must your trip start?" id="SelectFromDate1">
                                         <div class="input-group date" id="SelectFromDate2"> 
 </div>                                         
                                     </div>
                                     <div class="col-lg-5 col-md-4 col-sm-5 col-xl-5 mb-1"> 
                                         <!--<input type="text" class="form-control form-control-lg ps-4 pe-4 rounded-pill" placeholder="What are you looking for?"> -->                                         
-                                        <label for="to" class="col-form-label-lg form-label">Check out</label>
-                                        <input type="date" class="form-control form-control-lg ps-4 pe-4 input-group date rounded-pill" placeholder="When must your trip start?" id="SelectToDate1">
+                                        <label for="check_out" class="col-form-label-lg form-label">Check out</label>
+                                        <input name="check_out" id="check_out" type="date" class="form-control form-control-lg ps-4 pe-4 input-group date rounded-pill" placeholder="When must your trip start?" id="SelectToDate1">
                                         <div class="input-group date" id="SelectToDate2"> 
 </div>                                         
                                     </div>
                                 </div>
                                 <div class="gx-2 row">
                                     <div class="col-9 col-sm-5 col-xl-5 col-xxl-7 mb-3">
-                                        <label for="numhunters" class="col-12 col-form-label-lg col-xl-12 col-xxl-12 form-label">How many hunters? <span id="TimeText">1</span>
+                                        <label for="numhunters" class="col-12 col-form-label-lg col-xl-12 col-xxl-12 form-label">How many hunters?
+                                            <span id="TimeTextHunters">1</span>
                                         </label>
-                                        <input type="range" class="form-range" min="1" max="20" value="1" id="TimeRange" style="width: 195px;">
+                                        <input name="hunters" type="range" class="form-range" min="1" max="20" value="1" id="TimeTextHunters" style="width: 195px;">
                                     </div>
                                 </div>
                                 <div class="gx-2 row">
                                     <div class="col-9 col-sm-5 col-xl-5 col-xxl-7 mb-3">
-                                        <label for="numguests" class="col-12 col-form-label-lg col-xl-12 col-xxl-12 form-label">How many guests? <span id="TimeTextGuests">0</span>
+                                        <label for="numguests" class="col-12 col-form-label-lg col-xl-12 col-xxl-12 form-label">How many guests?
+                                            <span id="TimeTextGuests">0</span>
                                         </label>
-                                        <input type="range" class="form-range" min="0" max="20" value="0" id="TimeRangeGuests" style="width: 195px;">
+                                        <input name="guests" type="range" class="form-range" min="0" max="20" value="0" id="TimeRangeGuests" style="width: 195px;">
                                     </div>
                                 </div>
                                 <div class="gx-2 row text-sm-center">
-                                    <div class="col-sm-12 mb-3 text-center"> <a href="directory-listing-1.html"><button type="submit" class="btn btn-lg form-submit pe-4 ps-4 rounded-pill">
+                                    <div class="col-sm-12 mb-3 text-center">
+                                        <a href="directory-listing-1.html">
+                                            <button type="submit" class="btn btn-lg form-submit pe-4 ps-4 rounded-pill">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.25em" height="1.25em" class="me-1">
                                                     <g>
                                                         <path fill="none" d="M0 0h24v24H0z"></path>
@@ -102,7 +106,8 @@
                                                     </g>
                                                 </svg>
                                                 <span class="align-middle">Search</span>&nbsp;
-                                            </button></a> 
+                                            </button>
+                                        </a> 
                                     </div>
                                 </div>                                 
                             </form>
