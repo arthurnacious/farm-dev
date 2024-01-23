@@ -91,103 +91,58 @@ $hunters        = $_POST['hunters'];
 $guests         = $_POST['guests'];
 
 
-if (count($_POST) !== 0) { //with search
-
-  $tagNames = [];
-  foreach ($tags as $key => $value) {
+$tagNames = [];
+foreach ($tags as $key => $value) {
     if (isset($tags[$key]) && $tags[$key] !== '') {
-      $tagNames[] = ucwords(str_replace("_", " ", $key));
+        $tagNames[] = ucwords(str_replace("_", " ", $key));
     }
-  }
-
-  if(count($tagNames) > 0){
-    $sqlStmnt = "SELECT id FROM reference_features WHERE english IN ('" . implode("', '", array_map(function($tagName) {
-      global $conn;
-      return mysqli_real_escape_string($conn, $tagName);
-    }, $tagNames)) . "')";
-  
-
-    $result = $conn->query($sqlStmnt);
-
-    $featureId = [];
-    while ($row = $result->fetch_assoc()) {
-        $featureId[] = $row['id'];
-    }
-
-    $farmSql = "SELECT * FROM farm where farm_id = 0"; // will return null if there is no farm features found...
-
-    if(count($featureId) > 0){
-      $farmFeat = "SELECT farm_id FROM farm_features where feature_id IN (". implode(", ", $featureId) . ")";
-      
-      $farmFetRes = $conn->query($farmFeat);
-
-      $farmIds = [];
-      while ($row = $farmFetRes->fetch_assoc()) {
-          $farmIds[] = $row['farm_id'];
-      }
-
-      if(count($farmIds) > 0){
-        $ands = '';
-
-        if($searchKeywords != '')
-        {
-          $ands .= " AND farm_name LIKE '%". $searchKeywords ."%'";
-        }
-
-        if($location != '')
-        {
-          $ands .= " AND district like '%". $location ."%'";
-        }
-
-        $farmSql = "SELECT * FROM farm where farm_id IN (". implode(", ", $farmIds) . ")" . $ands;
-      }
-    }
-
-    $result = $conn->query($farmSql);
-  }else{
-    $sqlStmnt = "SELECT * FROM farm WHERE district like '%". $location ."%'";
-    //do stuff for check_in, check_out,  And (hunters + guests),
-    $result = $conn->query($sqlStmnt);    
-  }
-
-
-
-}else{ //without search
-  $sqlStmnt = "SELECT * FROM farm";
-  $result = $conn->query($sqlStmnt);
 }
+
+//references
+if (!empty($tagNames)) {
+  $featureSql = "SELECT id FROM reference_features WHERE english IN ('" . implode("', '", $tagNames) . "')";
+  $featureResult = $conn->query($featureSql);
+
+  while ($row = $featureResult->fetch_assoc()) {
+      $featureIds[] = $row['id'];
+  }
+}
+
+$sql = "SELECT f.*, 
+        COALESCE(AVG(fr.star_rating), 0) AS average_rating, 
+        COUNT(DISTINCT fr.hunter_id) as count_rating,
+        AVG(au.price) AS avg_price, 
+        MIN(au.price) AS min_price, 
+        MAX(au.price) AS max_price
+        FROM farm f
+        LEFT JOIN farm_features ff ON f.farm_id = ff.farm_id
+        LEFT JOIN reference_features rf ON ff.feature_id = rf.id
+        LEFT JOIN farm_ratings fr ON f.farm_id = fr.farm_id
+        LEFT JOIN accommodation_units au ON f.farm_id = au.farm_id";
+$sql .= !empty($featureIds) ? " WHERE (rf.id IN (" . implode(", ", $featureIds) . ")) " : null;
+$sql .= !empty($location) ? " AND f.district LIKE '%" . $location . "%'" : null;
+$sql .= !empty($searchKeywords) ? " AND f.farm_name LIKE '%" . $searchKeywords . "%'" : null;
+$sql .= " GROUP BY f.farm_id";
+$sql .= " ORDER BY f.farm_id";
+
+
+$result = $conn->query($sql);
 
 $farms = [];
-while ($row = $result->fetch_assoc()) {
-  $farms[] = $row;
+while ($farm = $result->fetch_assoc()) {
+    $farms[] = $farm;
 }
+
+$conn->close(); //close connection
 
 $data = [];
 $i = 0;
-foreach ($farms as $farm) {
-  // profile_image
-  $farms[$i]['profile_image'] = checkImage('farms', $farm->farm_id, 'profile');
-
-  // average_rating
-  $averageQuery = $conn->query("SELECT AVG(star_rating) AS average_rating, COUNT(DISTINCT(hunter_id)) as count_rating  FROM farm_ratings WHERE farm_id = ". $farm['farm_id']);
-  $averageResult = $averageQuery->fetch_assoc();
-  $farms[$i]['average_rating'] = $averageResult['average_rating'] ?? 0;
-  $farms[$i]['count_rating'] = $averageResult['count_rating'] ?? 0;
-
-
-  // price from
-  $priceQuery = $conn->query("SELECT AVG(price) AS avg_price, MIN(price) AS min_price, MAX(price) AS max_price FROM accommodation_units WHERE farm_id = " . $farm['farm_id']);
-  $priceResult = $priceQuery->fetch_assoc();
-  $farms[$i]['price'] = [];
-  if($priceResult){
-    $farms[$i]['price']['from'] = $priceResult['min_price'];
-    $farms[$i]['price']['to'] = $priceResult['max_price'];
-  }
+foreach ($farms as $farm) { //add images to each farm...
+  // farm_image
+  $farms[$i]['farm_image'] = checkImage('farms', $farm->farm_id, 'profile');
   $i++;
 }
 
-
-$conn->close();
 echo json_encode($farms);
 exit();
 

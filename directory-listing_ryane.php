@@ -53,7 +53,7 @@
                 items.forEach(item => {
                     let itemHTML = `
                         <div class="pb-3 pt-3"> 
-                            <div class="border"> <a href="#" class="d-block"><img src="${item.profile_image}" class="img-fluid w-100" alt="Location image" width="350" height="240"></a>
+                            <div class="border"> <a href="#" class="d-block"><img src="${item.farm_image}" class="img-fluid w-100" alt="Location image" width="350" height="240"></a>
                                 <div class="pb-3 ps-4 pe-4 pt-4">
                                     <div class="align-items-center d-flex justify-content-between">
                                         <div class="pb-1 pt-1">
@@ -91,7 +91,7 @@
                                                 )
                                             </span>
                                         </div>
-                                        ${item.price ? `<span class="fw-bold pb-1 pt-1">From R${item.price.from}</span>` : null }
+                                        <span class="fw-bold pb-1 pt-1">From R${item.min_price}</span>
                                     </div>
                                 </div>                                         
                             </div>                                     
@@ -717,7 +717,11 @@
                             bar_lounge: $('#check_bar').prop('checked') ? 1 : 0,
                             terrace_patio: $('#check_pat').prop('checked') ? 1 : 0,
                             restaurant: $('#check_rst').prop('checked') ? 1 : 0,
-                        }
+                        },
+                        check_in: "<?=$_GET['check_in']?>",
+                        check_out: "<?=$_GET['check_out']?>",
+                        hunters: "<?=$_GET['hunters']?>",
+                        guests: "<?=$_GET['guests']?>",
                     };  
 
                     fetchHotelData(formData);
@@ -731,7 +735,7 @@
                     // Make AJAX request
 
                     $.ajax({
-                        url: 'ajaxapi_llw.php',
+                        url: 'ajaxapi_llw_art.php',
                         type: 'POST',
                         data: formData,
                         dataType: 'json',
