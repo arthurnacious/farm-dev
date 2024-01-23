@@ -16,7 +16,41 @@ $farm_id = (int) $_GET['farm'];
 
 $sqlStmnt = "SELECT * FROM farm WHERE farm_id = ". $farm_id;
 $result = $conn->query($sqlStmnt);
-$farmRow = $result->fetch_assoc();
+$farm = $result->fetch_assoc();
+
+
+if (empty($farm)) {
+    $redirectUrl = "/farms-not-found";
+ 
+    header("Location: $redirectUrl");
+    exit();
+ }
+
+function escape_and_echo(string $text): string {
+    $escaped_text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    return $escaped_text;
+}
+
+function checkImage($type, $id, $fileName) {
+    $directory = "/home/veldtuoy/public_html/dev/photos/{$type}/{$id}/";
+    $files = (array) scandir($directory);
+    $matchingFiles = preg_grep("/^{$fileName}\..*$/", $files);
+     // Check if there is at least one matching file
+    if (!empty($matchingFiles)) {
+        reset($matchingFiles);
+        $fullFileName = "https://www.veldtoe.co.za/dev/photos/{$type}/{$id}/".current($matchingFiles);
+    } else {
+        // Gets image placeholder if image doesn't exist
+        $fullFileName = 'https://www.veldtoe.co.za/dev/photos/no-image.jpg';
+    }
+    return $fullFileName;
+  }
+
+  $farm['farm_image'] = checkImage('farms', $farm['farm_id'], 'profile');
+
+
+//  var_dump($farm);
+//  die();
 
 ?>
 <!DOCTYPE html>
@@ -157,8 +191,7 @@ $farmRow = $result->fetch_assoc();
                     <div class="gx-lg-5 gy-4 row">
                         <div class="col-lg-7 col-xl-8"> 
                             <h2 class="h5 mb-3 text-dark">About the Business</h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Scelerisque felis imperdiet proin fermentum leo vel orci porta non. Justo eget magna fermentum iaculis eu non. Eu lobortis elementum nibh tellus molestie nunc non blandit. Risus ultricies tristique nulla aliquet enim tortor at. Sit amet massa vitae tortor condimentum lacinia quis vel eros. Maecenas sed enim ut sem viverra aliquet eget sit. Ut tellus elementum sagittis vitae et leo duis. Lacus luctus accumsan tortor posuere ac ut consequat semper. Tellus pellentesque eu tincidunt tortor aliquam nulla. Risus in hendrerit gravida rutrum quisque non tellus orci ac. Luctus venenatis lectus magna fringilla urna porttitor rhoncus dolor. Nunc lobortis mattis aliquam faucibus purus in massa tempor nec. Senectus et netus et malesuada fames ac turpis. Sit amet consectetur adipiscing elit. Aliquam etiam erat velit scelerisque in dictum non. Rutrum quisque non tellus orci ac auctor augue mauris augue. Vulputate odio ut enim blandit volutpat. Nibh sit amet commodo nulla facilisi nullam vehicula ipsum a.</p>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                            <p><?= escape_and_echo($farm['farm_description_english']) ?></p>
                             <hr class="mb-4 mt-4"/>
                             <h2 class="h5 mb-3 text-dark">Amenities</h2>
                             <div class="gy-2 row row-cols-2 row-cols-md-3 row-cols-xl-4 small text-secondary">
