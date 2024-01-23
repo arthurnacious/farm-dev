@@ -1,3 +1,24 @@
+<?php
+
+if(!isset($_GET['farm']) || empty($_GET['farm'])){
+    die('Farm s required');
+}
+// require('/home/veldtuoy/llw_php/llw_config.php');
+//please remove me
+$db_host = 'localhost';
+$db_user = 'root';
+$db_pass = 'Pass1234';
+$db_name = 'farm';
+
+$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+$farm_id = (int) $_GET['farm'];
+
+$sqlStmnt = "SELECT * FROM farm WHERE farm_id = ". $farm_id;
+$result = $conn->query($sqlStmnt);
+$farmRow = $result->fetch_assoc();
+
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>

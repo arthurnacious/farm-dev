@@ -57,7 +57,7 @@
                                 <div class="pb-3 ps-4 pe-4 pt-4">
                                     <div class="align-items-center d-flex justify-content-between">
                                         <div class="pb-1 pt-1">
-                                            <a href="/directory-details.html?farm=${item.farm_id}" class="link-dark text-decoration-none"><h2 class="h5 mb-1">${item.farm_name}</h2></a>
+                                            <a href="/directory-details.php?farm=${item.farm_id}" class="link-dark text-decoration-none"><h2 class="h5 mb-1">${item.farm_name}</h2></a>
                                             <div>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em" class="me-1 location text-primary">
                                                     <g>
@@ -67,12 +67,15 @@
                                                 </svg>
                                                 <span class="align-middle">${item.district}</span>
                                             </div>
-                                        </div><a class="btn fav ms-2 p-2 rounded-pill" href="#" aria-label="add to favorite"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em" class="d-block">
+                                        </div>
+                                        <a class="btn fav ms-2 p-2 rounded-pill" href="/directory-details.php?farm=${item.farm_id}" aria-label="add to favorite">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em" class="d-block">
                                                 <g>
                                                     <path fill="none" d="M0 0H24V24H0z"/>
                                                     <path d="M20.243 4.757c2.262 2.268 2.34 5.88.236 8.236l-8.48 8.492-8.478-8.492c-2.104-2.356-2.025-5.974.236-8.236C5.515 3 8.093 2.56 10.261 3.44L6.343 7.358l1.414 1.415L12 4.53l-.013-.014.014.013c2.349-2.109 5.979-2.039 8.242.228z"/>
                                                 </g>
-                                            </svg></a>
+                                            </svg>
+                                        </a>
                                     </div>
                                     <hr/>
                                     <div class="align-items-center d-flex justify-content-between">

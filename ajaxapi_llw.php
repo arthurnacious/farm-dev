@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $db_host = 'localhost';
 $db_user = 'root';
 $db_pass = 'Pass1234';
-// $db_name = 'farm';
+$db_name = 'farm';
 
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
