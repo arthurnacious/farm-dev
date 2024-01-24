@@ -24,10 +24,10 @@
                         items.sort((a, b) => a.farm_name.localeCompare(b.farm_name));
                         break;
                     case "Price: High to Low":
-                        items.sort((a, b) => b.price.to - a.price.to);
+                        items.sort((a, b) => b.min_price - a.min_price);
                         break;
                     case "Price: Low to High":
-                        items.sort((a, b) => a.price.from - b.price.from);
+                        items.sort((a, b) => a.max_price - b.max_price);
                         break;
                     case "Nearby":
                         // items.sort((a, b) => a.distance - b.distance);
@@ -39,8 +39,6 @@
                         //no sorting
                         break;
                 }
-
-                console.log(items)
     
                 updateDisplay(items);
             }
