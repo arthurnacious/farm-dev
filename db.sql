@@ -74,7 +74,7 @@ CREATE TABLE `accommodation_units` (
   `name` text DEFAULT NULL,
   `capacity` int(11) NOT NULL,
   `price` int(11) NOT NULL,
-  `price_unit` text NOT NULL DEFAULT 'ZAR',
+  `price_unit` varchar(255) NOT NULL DEFAULT 'ZAR',
   `price_level` int(11) NOT NULL DEFAULT 2,
   `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_updated` timestamp NOT NULL DEFAULT current_timestamp()

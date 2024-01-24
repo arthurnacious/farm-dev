@@ -3,21 +3,24 @@
 if(!isset($_GET['farm']) || empty($_GET['farm'])){
     die('Farm s required');
 }
-// require('/home/veldtuoy/llw_php/llw_config.php');
+require('/home/veldtuoy/llw_php/llw_config.php');
 //please remove me
-$db_host = 'localhost';
-$db_user = 'root';
-$db_pass = 'Pass1234';
-$db_name = 'farm';
+// $db_host = 'localhost';
+// $db_user = 'Hamza';
+// $db_pass = '1404';
+// $db_name = 'farm';
 
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
 $farm_id = (int) $_GET['farm'];
 
-$sqlStmnt = "SELECT * FROM farm WHERE farm_id = ". $farm_id;
+// $sqlStmnt = "SELECT * FROM farm WHERE farm_id = ". $farm_id;
+// $result = $conn->query($sqlStmnt);
+// $farm = $result->fetch_assoc();
+
+$sqlStmnt = "SELECT f.*, COALESCE(AVG(fr.star_rating), 0) AS average_rating, AVG(au.price) AS avg_price, MIN(au.price) AS min_price, MAX(au.price) AS max_price FROM farm f LEFT JOIN farm_ratings fr ON f.farm_id = fr.farm_id LEFT JOIN accommodation_units au ON f.farm_id = au.farm_id WHERE f.farm_id = ". $farm_id;
 $result = $conn->query($sqlStmnt);
 $farm = $result->fetch_assoc();
-
 
 if (empty($farm)) {
     $redirectUrl = "/farms-not-found";
@@ -44,9 +47,71 @@ function checkImage($type, $id, $fileName) {
         $fullFileName = 'https://www.veldtoe.co.za/dev/photos/no-image.jpg';
     }
     return $fullFileName;
-  }
+}
 
-  $farm['farm_image'] = checkImage('farms', $farm['farm_id'], 'profile');
+function generateStarRating($ratingsAverage) {
+    $filledStarSVG = '
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
+        <g>
+            <path fill="none" d="M0 0h24v24H0z"/>
+            <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/>
+        </g>
+    </svg>
+    ';
+    $halfStarSVG = '
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
+        <g>
+            <path fill="none" d="M0 0h24v24H0z"/>
+            <path d="M12 15.968l4.247 2.377-.949-4.773 3.573-3.305-4.833-.573L12 5.275v10.693zm0 2.292l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928L12 18.26z"/>
+        </g>
+    </svg>
+    ';
+    $ratingHTML = '';
+
+    // Use a switch case to determine the star rating
+    switch (round($ratingsAverage * 2) / 2) {
+        case 0.5:
+            $ratingHTML = $halfStarSVG;
+            break;
+        case 1:
+            $ratingHTML = $filledStarSVG;
+            break;
+        case 1.5:
+            $ratingHTML = $filledStarSVG . $halfStarSVG;
+            break;
+        case 2: 
+            $ratingHTML = $filledStarSVG . $filledStarSVG;
+            break;
+        case 2.5:
+            $ratingHTML = $filledStarSVG . $filledStarSVG . $halfStarSVG;
+            break;
+        case 3:
+            $ratingHTML = $filledStarSVG . $filledStarSVG . $filledStarSVG;
+            break;
+        case 3.5:
+            $ratingHTML = $filledStarSVG . $filledStarSVG . $filledStarSVG . $halfStarSVG;
+            break;
+        case 4:
+            $ratingHTML = $filledStarSVG . $filledStarSVG . $filledStarSVG . $filledStarSVG;
+            break;
+        case 4.5:
+            $ratingHTML = $filledStarSVG . $filledStarSVG . $filledStarSVG . $filledStarSVG . $halfStarSVG;
+            break;
+        case 5:
+            $ratingHTML = $filledStarSVG . $filledStarSVG . $filledStarSVG . $filledStarSVG . $filledStarSVG;
+            break;
+        default:
+            $ratingHTML = $filledStarSVG . $filledStarSVG . $filledStarSVG . $filledStarSVG . $filledStarSVG;
+            break;
+    }
+
+    return $ratingHTML;
+}
+
+
+$farm['farm_image'] = checkImage('farms', $farm['farm_id'], 'profile');
+
+
 
 
 //  var_dump($farm);
@@ -83,12 +148,12 @@ function checkImage($type, $id, $fileName) {
                                 </svg><span class="align-middle">Add Listing</span></a> 
                         </li>
                         <li class="ms-2 nav-item"> 
-</li>
+                        </li>
                         <li class="ms-2 nav-item">
                             <div class="form-check form-switch">
                                 <input class="bg-warning form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
                                 <label class="form-check-label text-white" for="flexSwitchCheckChecked">Switch to Afrikaans
-</label>
+                                </label>
                             </div>                             
                         </li>                         
                     </ul>
@@ -97,9 +162,9 @@ function checkImage($type, $id, $fileName) {
                     <div class="collapse navbar-collapse " id="navbarNavDropdown-3"> 
                         <ul class="navbar-nav "> 
                             <li class="nav-item"> 
-</li>                             
+                            </li>                             
                             <li class="nav-item"> 
-</li>                             
+                            </li>                             
                         </ul>
                         <ul class="align-items-lg-center ms-auto navbar-nav"> 
                             <li class="nav-item"> <a class="nav-link px-lg-3 py-lg-4 text-white" href="Farmer-register.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.25em" height="1.25em" class="me-2">
@@ -114,7 +179,7 @@ function checkImage($type, $id, $fileName) {
                 </div>                 
             </nav>
         </header>
-        <section class="background-cover bg-dark pb-4 position-relative pt-5" style="background-image:url('https://images.unsplash.com/photo-1556960146-ba4d5f5fa2f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wyMDkyMnwwfDF8c2VhcmNofDh8fHNhZmFyaXxlbnwwfHx8fDE2OTA4MTM3Mzd8MA&ixlib=rb-4.0.3&q=80&w=1080');">
+        <section class="background-cover bg-dark pb-4 position-relative pt-5" style="background-image:url('<?= escape_and_echo($farm['farm_image']) ?>');">
             <div class="container mt-5 position-relative pt-5">
                 <div class="mt-5 pb-5 pt-5"></div>
                 <div class="bg-dark opacity-75 overflow-hidden p-3 text-light">
@@ -123,7 +188,7 @@ function checkImage($type, $id, $fileName) {
                             <img src="assets/img/vetted_verified_orange_opacity.png" width="60" height="60" alt="Business logo"/> 
                         </div>
                         <div class="col-lg">
-                            <h1 class="fw-bold h3">Thula Ingwe Lodge</h1>
+                            <h1 class="fw-bold h3"><?= escape_and_echo($farm['farm_description_english']) ?></h1>
                             <hr/>
                             <div class="align-items-center gy-3 row">
                                 <div class="col-sm">
@@ -131,44 +196,21 @@ function checkImage($type, $id, $fileName) {
                                         <div class="col-lg-auto col-md-auto">
                                             <h2 class="fw-normal h6 mb-1">Category</h2>
                                             <div class="small">
-                                                <span>Luxury</span>
+                                                <span><?= escape_and_echo($farm['category']) ?></span>
                                             </div>                                             
                                         </div>
                                         <div class="col-lg-auto col-md-auto">
                                             <h2 class="fw-normal h6 mb-1">Reviews</h2>
                                             <div class="small">
-                                                <span class="text-primary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
-                                                        <g>
-                                                            <path fill="none" d="M0 0h24v24H0z"/>
-                                                            <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/>
-                                                        </g>
-                                                    </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
-                                                        <g>
-                                                            <path fill="none" d="M0 0h24v24H0z"/>
-                                                            <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/>
-                                                        </g>
-                                                    </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
-                                                        <g>
-                                                            <path fill="none" d="M0 0h24v24H0z"/>
-                                                            <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/>
-                                                        </g>
-                                                    </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
-                                                        <g>
-                                                            <path fill="none" d="M0 0h24v24H0z"/>
-                                                            <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/>
-                                                        </g>
-                                                    </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em">
-                                                        <g>
-                                                            <path fill="none" d="M0 0h24v24H0z"/>
-                                                            <path d="M12 15.968l4.247 2.377-.949-4.773 3.573-3.305-4.833-.573L12 5.275v10.693zm0 2.292l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928L12 18.26z"/>
-                                                        </g>
-                                                    </svg></span>
+                                                <span class="text-primary">
+                                                <?php echo generateStarRating($farm['average_rating']) ?>
+                                                </span>
                                             </div>                                             
                                         </div>
                                         <div class="col-lg-auto col-md-auto">
                                             <h2 class="fw-normal h6 mb-1">Price Range</h2>
                                             <div class="small">
-                                                <span class="pb-1 pt-1"><span>$</span><span>$</span><span>$$$</span></span>
+                                                <span class="pb-1 pt-1">R<?= escape_and_echo($farm['min_price']) ?></span>
                                             </div>                                             
                                         </div>
                                     </div>                                     
@@ -192,105 +234,235 @@ function checkImage($type, $id, $fileName) {
                         <div class="col-lg-7 col-xl-8"> 
                             <h2 class="h5 mb-3 text-dark">About the Business</h2>
                             <p><?= escape_and_echo($farm['farm_description_english']) ?></p>
+                            <h3 class="h6 mb-3 text-dark">Accommodation: <?= escape_and_echo($farm['accommodation']) ?> People</h3>
                             <hr class="mb-4 mt-4"/>
                             <h2 class="h5 mb-3 text-dark">Amenities</h2>
                             <div class="gy-2 row row-cols-2 row-cols-md-3 row-cols-xl-4 small text-secondary">
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['boma'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['boma'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">ATM on-site</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
-                                    </svg>
+
+                                
+
+                                <div>
+                                    <?php                                   
+                                        if ($farm['free_wifi'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['free_wifi'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Free Wi-Fi</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['restaurant'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['restaurant'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Restaurant</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['housekeeping'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['housekeeping'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Daily housekeeping</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['fitness_center'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['fitness_center'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Fitness Center</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['dstv'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['dstv'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Cable TV</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['aircon'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['aircon'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Air Conditioned</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['gift_shop'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['gift_shop'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Gift Shop</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['meeting_hall'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['meeting_hall'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Meeting Hall</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['pet_allowed'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['pet_allowed'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Pet Allowed</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['swimming_pool'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['swimming_pool'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Outdoor Pool</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['free_parking'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['free_parking'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Free Parking</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['bar_lounge'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['bar_lounge'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Bar/Lounge</span> 
                                 </div>
-                                <div> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
-                                        <path fill="none" d="M0 0h24v24H0z"/>
-                                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
-                                    </svg>
+                                <div>
+                                    <?php                                   
+                                        if ($farm['terrace_patio'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2 text-primary" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5zm6.003 11L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"/>
+                                                </svg>';
+                                        } else if ($farm['terrace_patio'] == 0) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1rem" height="1rem" class="me-2" fill="currentColor">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h14V5H5z"/>
+                                                </svg>';
+                                        }
+                                    ?>
                                     <span class="align-middle">Terrace/Patio</span> 
                                 </div>
                             </div>
@@ -430,7 +602,8 @@ function checkImage($type, $id, $fileName) {
                                                         <path fill="none" d="M0 0h24v24H0z"/>
                                                         <path d="M12 15.968l4.247 2.377-.949-4.773 3.573-3.305-4.833-.573L12 5.275v10.693zm0 2.292l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928L12 18.26z"/>
                                                     </g>
-                                                </svg></span> 
+                                                </svg>
+                                            </span> 
                                         </div>
                                         <div class="col-sm-auto"> <span class="text-secondary">17 March, 2021</span> 
                                         </div>
@@ -457,8 +630,7 @@ function checkImage($type, $id, $fileName) {
                                                         <path d="M12 20.9l4.95-4.95a7 7 0 1 0-9.9 0L12 20.9zm0 2.828l-6.364-6.364a9 9 0 1 1 12.728 0L12 23.728zM12 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"></path>                                                         
                                                     </svg>                                                     
                                                 </div>
-                                                <div class="col">9056 Fairground Ave. Dearborn, MI 48124, United States of America                             
-</div>
+                                                <div class="col"><?= escape_and_echo($farm['district']) ?></div>
                                             </div>
                                             <div class="g-0 mb-2 row">
                                                 <div class="col-auto">
@@ -466,7 +638,7 @@ function checkImage($type, $id, $fileName) {
                                                         <path d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm17 4.238l-7.928 7.1L4 7.216V19h16V7.238zM4.511 5l7.55 6.662L19.502 5H4.511z"></path>                                                         
                                                     </svg>                                                     
                                                 </div>
-                                                <div class="col"> <a href="mailto:info@company.com" class="link-secondary text-decoration-none">info@company.com</a> 
+                                                <div class="col"> <a href="mailto:info@company.com" class="link-secondary text-decoration-none"><?= escape_and_echo($farm['owner_email']) ?></a> 
                                                 </div>
                                             </div>
                                             <div class="g-0 mb-2 row">
@@ -475,7 +647,7 @@ function checkImage($type, $id, $fileName) {
                                                         <path d="M9.366 10.682a10.556 10.556 0 0 0 3.952 3.952l.884-1.238a1 1 0 0 1 1.294-.296 11.422 11.422 0 0 0 4.583 1.364 1 1 0 0 1 .921.997v4.462a1 1 0 0 1-.898.995c-.53.055-1.064.082-1.602.082C9.94 21 3 14.06 3 5.5c0-.538.027-1.072.082-1.602A1 1 0 0 1 4.077 3h4.462a1 1 0 0 1 .997.921A11.422 11.422 0 0 0 10.9 8.504a1 1 0 0 1-.296 1.294l-1.238.884zm-2.522-.657l1.9-1.357A13.41 13.41 0 0 1 7.647 5H5.01c-.006.166-.009.333-.009.5C5 12.956 11.044 19 18.5 19c.167 0 .334-.003.5-.01v-2.637a13.41 13.41 0 0 1-3.668-1.097l-1.357 1.9a12.442 12.442 0 0 1-1.588-.75l-.058-.033a12.556 12.556 0 0 1-4.702-4.702l-.033-.058a12.442 12.442 0 0 1-.75-1.588z"></path>                                                         
                                                     </svg>                                                     
                                                 </div>
-                                                <div class="col"> <a href="tel:+0 123-456-789" class="link-secondary text-decoration-none">+0 123-456-789</a> 
+                                                <div class="col"> <a href="tel:+0 123-456-789" class="link-secondary text-decoration-none"><?= escape_and_echo($farm['owner_mobile']) ?></a> 
                                                 </div>
                                             </div>
                                             <div class="g-0 mb-2 row">
@@ -931,11 +1103,11 @@ function checkImage($type, $id, $fileName) {
                             </form>                             
                         </div>
                         <div class="col-lg-6 col-xl-4 py-3"> 
-</div>
+                        </div>
                         <div class="col-lg-6 col-xl-4 py-3">
                             <h2 class="h5 mb-3 text-white">Get Social</h2> 
                             <form class="mb-4"> 
-</form>
+                            </form>
                             <div class="d-inline-flex flex-wrap"> <a href="#" class="link-secondary p-1" aria-label="facebook link"> <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"> 
                                         <path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5z"/> 
                                     </svg> </a> <a href="#" class="link-secondary p-1" aria-label="twitter link"> <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"> 
