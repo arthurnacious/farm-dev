@@ -128,7 +128,8 @@ $sql = "SELECT f.*,
   LEFT JOIN farm_features ff ON f.farm_id = ff.farm_id
   LEFT JOIN reference_features rf ON ff.feature_id = rf.id
   LEFT JOIN farm_ratings fr ON f.farm_id = fr.farm_id
-  LEFT JOIN accommodation_units au ON f.farm_id = au.farm_id";
+  LEFT JOIN accommodation_units au ON f.farm_id = au.farm_id
+  LEFT JOIN bookings b ON b.farm_id = au.farm_id";
 
   // Add WHERE clause if any of the conditions are present
   $conditions = [];
@@ -178,7 +179,7 @@ $data = [];
 $i = 0;
 foreach ($farms as $farm) { //add images to each farm...
   // farm_image
-  $farms[$i]['farm_image'] = checkImage('farms', $farm->farm_id, 'profile');
+  $farms[$i]['farm_image'] = checkImage('farms', $farm['farm_id'], 'profile');
   $i++;
 }
 

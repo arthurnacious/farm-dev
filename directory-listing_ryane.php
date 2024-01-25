@@ -27,7 +27,7 @@
                         items.sort((a, b) => b.min_price - a.min_price);
                         break;
                     case "Price: Low to High":
-                        items.sort((a, b) => a.max_price - b.max_price);
+                        items.sort((a, b) => a.min_price - b.min_price);
                         break;
                     case "Nearby":
                         // items.sort((a, b) => a.distance - b.distance);
