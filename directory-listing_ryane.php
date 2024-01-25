@@ -14,8 +14,11 @@
         <link href="style.css" rel="stylesheet">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
         
+
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
         <script>
             let items = [];
@@ -116,7 +119,12 @@
                     sortItems(items, this.value);
                 });
             };
-        </script>    
+        </script> 
+        <style>
+            .nav-link.active{
+                color: rgb(255, 106, 0) !important;
+            }
+        </style>
 
     </head>
     <body class="text-black-50">
@@ -128,15 +136,16 @@
                     <div class="collapse navbar-collapse " id="navbarNavDropdown-66"> 
                         <ul class="navbar-nav ms-auto"> 
                             <li class="nav-item">
-                                <a class="nav-link px-lg-3 py-lg-4 text-light text-nowrap" href="#" data-pgc="hunterregister.modal">
-                                    <img src="assets/img/hunter.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninHunter">Hunter: Login/Sign Up
-                                </a>
+                                <button class="nav-link px-lg-3 py-lg-4 text-light" data-bs-toggle="modal" data-bs-target="#modalSigninHunter">
+                                    <img src="assets/img/hunter.png" style="margin-right: 5px;">
+                                    Hunter: Login/Sign Up
+                                </button>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link px-lg-3 py-lg-4 text-light text-nowrap" href="#">
-                                    <img src="assets/img/farmer.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninFarmer" data-pgc="Farmerregister.Modal">
+                                <button class="nav-link px-lg-3 py-lg-4 text-light" data-bs-toggle="modal" data-bs-target="#modalSigninFarmer">
+                                    <img src="assets/img/farmer.png" style="margin-right: 5px;">
                                     Farmer: Login/Sign Up
-                                </a> 
+                                </button> 
                             </li>
                             <li class="nav-link m-4">
                                 <div class="form-check form-switch text-nowrap">
@@ -322,72 +331,67 @@
                             <!-- data goes here -->
                             </div>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="loginRegisterModal" tabindex="-1" role="dialog" aria-labelledby="loginRegisterModalLabel" aria-hidden="true">
-                              <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="loginRegisterModalLabel">Login/Register</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
-                                  </div>
-                                  <div class="modal-body">
-                                    <!-- Nav tabs -->
-                                    <ul class="nav nav-tabs" id="loginRegisterTab" role="tablist">
-                                      <li class="nav-item">
-                                        <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login" aria-selected="true">Login</a>
-                                      </li>
-                                      <li class="nav-item">
-                                        <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register" aria-selected="false">Register</a>
-                                      </li>
-                                    </ul>
-                                    
-                                    <!-- Tab panes -->
-                                    <div class="tab-content">
-                                      <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
-                                        <!-- Login Form -->
-                                        <form id="loginForm">
-                                          <!-- Email input -->
-                                          <div class="form-group">
-                                            <label for="loginEmail">Email address</label>
-                                            <input type="email" class="form-control" id="loginEmail" aria-describedby="emailHelp" placeholder="Enter email">
-                                          </div>
-                                          <!-- Password input -->
-                                          <div class="form-group">
-                                            <label for="loginPassword">Password</label>
-                                            <input type="password" class="form-control" id="loginPassword" placeholder="Password">
-                                          </div>
-                                          <button type="submit" class="btn btn-primary">Login</button>
-                                        </form>
-                                      </div>
-                                      <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
-                                        <!-- Register Form -->
-                                        <form id="registerForm">
-                                          <!-- Email input -->
-                                          <div class="form-group">
-                                            <label for="registerEmail">Email address</label>
-                                            <input type="email" class="form-control" id="registerEmail" aria-describedby="emailHelp" placeholder="Enter email">
-                                          </div>
-                                          <!-- Password input -->
-                                          <div class="form-group">
-                                            <label for="registerPassword">Password</label>
-                                            <input type="password" class="form-control" id="registerPassword" placeholder="Password">
-                                          </div>
-                                          <button type="submit" class="btn btn-primary">Register</button>
-                                        </form>
-                                      </div>
+                           <!-- User Modal -->
+                            <div class="modal" id="loginRegisterModal" tabindex="-1" aria-labelledby="loginRegisterModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-dark bg-opacity-75" style="background-color: rgba(255, 255, 255, 0.6);">
+                                            <ul class="nav" id="loginRegisterTab" role="tablist">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active text-light " id="login-tab" data-bs-toggle="tab" href="#login" role="tab" aria-controls="login" aria-selected="true">Login</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link text-light" id="register-tab" data-bs-toggle="tab" href="#register" role="tab" aria-controls="register" aria-selected="false">Register</a>
+                                                </li>
+                                            </ul>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body p-5 pt-0">
+                                            <div class="tab-content">
+                                                <div class="tab-pane show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+                                                    <!-- Login Form -->
+                                                    <form id="loginForm">
+                                                        <div class="form-group mt-3">
+                                                            <label for="loginEmail">Email address</label>
+                                                            <input type="email" class="form-control" id="loginEmail" placeholder="Enter email">
+                                                        </div>
+                                                        <div class="form-group mt-3">
+                                                            <label for="loginPassword">Password</label>
+                                                            <input type="password" class="form-control" id="loginPassword" placeholder="Password">
+                                                        </div>
+                                                        <div class="form-group mt-3">
+                                                            <label for="loginPasswordConformation">Confirm Password</label>
+                                                            <input type="password" class="form-control" id="loginPassword" placeholder="Password">
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary mt-3">Login</button>
+                                                    </form>
+                                                </div>
+                                                <div class="tab-pane" id="register" role="tabpanel" aria-labelledby="register-tab">
+                                                    <!-- Register Form -->
+                                                    <form id="registerForm">
+                                                        <div class="form-group mt-3">
+                                                            <label for="registerEmail">Email address</label>
+                                                            <input type="email" class="form-control" id="registerEmail" placeholder="Enter email">
+                                                        </div>
+                                                        <div class="form-group mt-3">
+                                                            <label for="registerPassword">Password</label>
+                                                            <input type="password" class="form-control" id="registerPassword" placeholder="Password">
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary mt-3">Register</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                  </div>
                                 </div>
-                              </div>
                             </div>
-
+                            <!-- User Modal Button -->
                             <div>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loginRegisterModal">
-                                  Login/Register
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginRegisterModal">
+                                    Login/Register
                                 </button>
                             </div>
+
                             <!-- <div class="pb-3 pt-3 text-center">
                                 <a class="align-items-center btn btn-primary d-inline-flex pe-3 ps-3 rounded-pill" href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.25em" height="1.25em" class="me-2">
                                         <path fill="none" d="M0 0h24v24H0z"/>
