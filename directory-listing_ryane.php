@@ -13,6 +13,8 @@
         <!-- Custom styles for this template -->
         <link href="style.css" rel="stylesheet">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
         <script>
@@ -52,7 +54,10 @@
                     items.forEach(item => {
                         let itemHTML = `
                             <div class="pb-3 pt-3"> 
-                                <div class="border"> <a href="#" class="d-block"><img src="${item.farm_image}" class="img-fluid w-100" alt="Location image" width="350" height="240"></a>
+                                <div class="border">
+                                        <a href="/directory-details.php?farm=${item.farm_id}" class="d-block">
+                                            <div style="width: 350px; height: 240px; background-image: url('${item.farm_image}'); background-size: 100% 100%;" > </div>
+                                        </a>                                    
                                     <div class="pb-3 ps-4 pe-4 pt-4">
                                         <div class="align-items-center d-flex justify-content-between">
                                             <div class="pb-1 pt-1">
@@ -318,7 +323,74 @@
                                 id="grids"
                             >
                             <!-- data goes here -->
-                        </div>
+                            </div>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="loginRegisterModal" tabindex="-1" role="dialog" aria-labelledby="loginRegisterModalLabel" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="loginRegisterModalLabel">Login/Register</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <!-- Nav tabs -->
+                                    <ul class="nav nav-tabs" id="loginRegisterTab" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login" aria-selected="true">Login</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register" aria-selected="false">Register</a>
+                                      </li>
+                                    </ul>
+                                    
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                      <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+                                        <!-- Login Form -->
+                                        <form id="loginForm">
+                                          <!-- Email input -->
+                                          <div class="form-group">
+                                            <label for="loginEmail">Email address</label>
+                                            <input type="email" class="form-control" id="loginEmail" aria-describedby="emailHelp" placeholder="Enter email">
+                                          </div>
+                                          <!-- Password input -->
+                                          <div class="form-group">
+                                            <label for="loginPassword">Password</label>
+                                            <input type="password" class="form-control" id="loginPassword" placeholder="Password">
+                                          </div>
+                                          <button type="submit" class="btn btn-primary">Login</button>
+                                        </form>
+                                      </div>
+                                      <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+                                        <!-- Register Form -->
+                                        <form id="registerForm">
+                                          <!-- Email input -->
+                                          <div class="form-group">
+                                            <label for="registerEmail">Email address</label>
+                                            <input type="email" class="form-control" id="registerEmail" aria-describedby="emailHelp" placeholder="Enter email">
+                                          </div>
+                                          <!-- Password input -->
+                                          <div class="form-group">
+                                            <label for="registerPassword">Password</label>
+                                            <input type="password" class="form-control" id="registerPassword" placeholder="Password">
+                                          </div>
+                                          <button type="submit" class="btn btn-primary">Register</button>
+                                        </form>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loginRegisterModal">
+                                  Login/Register
+                                </button>
+                            </div>
                             <!-- <div class="pb-3 pt-3 text-center">
                                 <a class="align-items-center btn btn-primary d-inline-flex pe-3 ps-3 rounded-pill" href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.25em" height="1.25em" class="me-2">
                                         <path fill="none" d="M0 0h24v24H0z"/>
@@ -397,8 +469,7 @@
                                     <input type="password" class="form-control rounded-4" id="floatingPassword" placeholder="Password" required>
                                     <label for="floatingPassword">Password</label>
                                 </div>
-                                <button class="btn form-submit mb-3 rounded-4 text-center text-lg-center text-nowrap w-auto" type="submit">Sign In
-</button>
+                                <button class="btn form-submit mb-3 rounded-4 text-center text-lg-center text-nowrap w-auto" type="submit">Sign In</button>
                             </form>
                             <a data-bs-toggle="modal" href="#modalRegisterHunter" class="btn form-submit mb-3 rounded-4 text-center text-lg-center text-nowrap w-auto">Click here to register</a>
                             <div>
@@ -444,43 +515,43 @@
                                     <input type="text" class="form-control rounded-4 registration-fields" id="validationCustom01" value="" required placeholder="First Name">
                                     <div class="valid-feedback">
                                         Looks good!
-</div>
+                                    </div>
                                 </div>
                                 <div class="col-md-9 col-xl-12">
                                     <input type="text" class="form-control rounded-4 registration-fields" id="validationCustom02" value="" required placeholder="Surname">
                                     <div class="valid-feedback">
                                         Looks good!
-</div>
+                                    </div>
                                 </div>
                                 <div class="col-md-9 col-xl-12">
                                     <div class="has-validation">
                                         <input type="email" class="form-control rounded-4 registration-fields" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required placeholder="Email Address">
                                         <div class="invalid-feedback">
                                             Please enter a valid email address
-</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-9 col-xl-12">
                                     <input type="password" class="form-control rounded-4 registration-fields" id="validationCustom03" required placeholder="Password">
                                     <div class="invalid-feedback">
                                         Please enter a unique password.
-</div>
+                                    </div>
                                 </div>
                                 <div class="col-md-9 col-xl-12">
                                     <input type="password" class="form-control rounded-4 registration-fields" id="validationCustom04" required placeholder="Retype your password">
                                     <div class="invalid-feedback">
                                         Passwords doesn't match. Please check and retype carefully
-</div>
+                                    </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-check " style="margin-top: 10px; margin-bottom: 10px;">
                                         <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
                                         <label class="form-check-label" for="invalidCheck">
                                             Agree to terms and conditions
-</label>
+                                        </label>
                                         <div class="invalid-feedback">
                                             You must agree before submitting.
-</div>
+                                        </div>
                                     </div>
                                     <div class="col-12">
                                         <button class="btn form-submit rounded-4 text-center text-lg-center w-auto" type="submit" id="registerSubmit">Register</button>
@@ -536,7 +607,7 @@
                                     <label for="floatingPassword">Password</label>
                                 </div>
                                 <button class="btn form-submit mb-3 rounded-4 text-center text-lg-center text-nowrap w-auto" type="submit">Sign In
-</button>
+                                </button>
                             </form>
                             <a data-bs-toggle="modal" href="#modalRegisterFarmer" class="btn form-submit mb-3 rounded-4 text-center text-lg-center text-nowrap w-auto">Click here to register</a>
                             <div>
@@ -582,43 +653,43 @@
                                     <input type="text" class="form-control rounded-4 registration-fields" id="validationCustom01" value="" required placeholder="First Name">
                                     <div class="valid-feedback">
                                         Looks good!
-</div>
+                                    </div>
                                 </div>
                                 <div class="col-md-9 col-xl-12">
                                     <input type="text" class="form-control rounded-4 registration-fields" id="validationCustom02" value="" required placeholder="Surname">
                                     <div class="valid-feedback">
                                         Looks good!
-</div>
+                                </div>
                                 </div>
                                 <div class="col-md-9 col-xl-12">
                                     <div class="has-validation">
                                         <input type="email" class="form-control rounded-4 registration-fields" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required placeholder="Email Address">
                                         <div class="invalid-feedback">
                                             Please enter a valid email address
-</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-9 col-xl-12">
                                     <input type="password" class="form-control rounded-4 registration-fields" id="validationCustom03" required placeholder="Password">
                                     <div class="invalid-feedback">
                                         Please enter a unique password.
-</div>
+                                    </div>
                                 </div>
                                 <div class="col-md-9 col-xl-12">
                                     <input type="password" class="form-control rounded-4 registration-fields" id="validationCustom04" required placeholder="Retype your password">
                                     <div class="invalid-feedback">
                                         Passwords doesn't match. Please check and retype carefully
-</div>
+                                    </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-check " style="margin-top: 10px; margin-bottom: 10px;">
                                         <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
                                         <label class="form-check-label" for="invalidCheck">
                                             Agree to terms and conditions
-</label>
+                                        </label>
                                         <div class="invalid-feedback">
                                             You must agree before submitting.
-</div>
+                                        </div>
                                     </div>
                                     <div class="col-12">
                                         <button class="btn form-submit rounded-4 text-center text-lg-center w-auto" type="submit" id="registerSubmit">Register</button>
