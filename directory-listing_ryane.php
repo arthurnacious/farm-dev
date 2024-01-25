@@ -112,6 +112,16 @@
                                                         </div>
                                                     </div>`;
                 }
+
+                ///update markers
+                let locations = items?.map((farm) => {
+                    return {
+                        lat: farm.latitude,
+                        lon:  farm.longitude,
+                        title: farm.farm_name
+                     }
+                });
+                placeMarkers(locations);
             }
     
             window.onload = function() {
@@ -731,7 +741,7 @@
         <!-- Make sure you put this AFTER Leaflet's CSS -->
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
         <script>
-           // Initialize the map
+           // Initialize the map                
             var map = L.map('map').setView([-29.0789923, 24.5010161], 5);
 
             // Add a tile layer
@@ -739,10 +749,19 @@
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            // Add a marker
-            L.marker([-29.0789923, 24.5010161]).addTo(map)
-                .bindPopup('A sample marker!')
-                .openPopup();
+
+            var locations = [];
+            placeMarkers(locations);
+
+            function placeMarkers(locations){
+
+
+                locations.forEach(function(location) {
+                    L.marker([location.lat, location.lon]).addTo(map)
+                    .bindPopup(location.title)
+                    .openPopup();
+                });
+            }
         </script>
         <script>
             var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
@@ -829,14 +848,15 @@
                         },
                         success: function (data) {
                             $('#empty').show();
-                            console.log({data});
-                            items = data
+                            // console.log(data);
+                            items = data;
                             updateDisplay(items);
+                            
                         },
                         error: function (error) {
                             $('#error').show();
                             $('#empty').hide();
-                            console.warn({error: error.message});
+                            console.warn({error: error});
                         },
                         complete: function () {
                             $('#filter_btn').html(originalButtonText);

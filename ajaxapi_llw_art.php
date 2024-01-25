@@ -99,6 +99,11 @@ $hunters        = $_POST['hunters'];
 $guests         = $_POST['guests'];
 $capacity = (int) $hunters + (int) $guests;
 
+// search location
+$radius         = $_POST['radius'];
+$latitute       = $_POST['latitute'];
+$longitute      = (int) $_POST['longitute'];
+
 
 $tagNames = [];
 foreach ($tags as $key => $value) {
@@ -123,9 +128,20 @@ $sql = "SELECT f.*,
   COUNT(DISTINCT fr.hunter_id) as count_rating,
   AVG(au.price) AS avg_price, 
   MIN(au.price) AS min_price, 
-  MAX(au.price) AS max_price
-  FROM farm f
-  LEFT JOIN farm_features ff ON f.farm_id = ff.farm_id
+  MAX(au.price) AS max_price";
+  if(!empty($radius)){
+    $sql .=  ", distance.distance_value AS distance";
+  }
+$sql .=  " FROM farm f ";
+if(!empty($radius)){
+    $sql .=  "LEFT JOIN 
+    (SELECT 
+         farm_id, 
+         (6371 * acos(cos(radians(-28.691861)) * cos(radians(latitude)) * cos(radians(longitude) - radians(26.302018)) + sin(radians(-28.691861)) * sin(radians(latitude)))) AS distance_value
+     FROM 
+         farm) AS distance ON f.farm_id = distance.farm_id";
+  }
+  $sql .= " LEFT JOIN farm_features ff ON f.farm_id = ff.farm_id
   LEFT JOIN reference_features rf ON ff.feature_id = rf.id
   LEFT JOIN farm_ratings fr ON f.farm_id = fr.farm_id
   LEFT JOIN accommodation_units au ON f.farm_id = au.farm_id
@@ -159,8 +175,12 @@ $sql = "SELECT f.*,
   }
 
   $sql .= " GROUP BY f.farm_id";
+  
+  if(!empty($radius)){
+    $sql .= " HAVING 
+      distance.distance_value < ". $radius;
+  }
   $sql .= " ORDER BY f.farm_id";
-
 
 
 // echo json_encode(escapeLineBreaksAndSpaces($sql));
