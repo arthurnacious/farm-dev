@@ -19,21 +19,33 @@
     <body class="text-black-50">
         <header style="background-color: rgba(255, 255, 255, 0.6);" class="fixed-top" id="navbar">
             <nav class=" bg-dark bg-opacity-75 flex-grow-1 ms-auto navbar navbar-dark navbar-expand-lg pb-lg-0 pt-lg-0" style="background-color: rgba(52, 50, 50, 0.89);" data-pgc="veldtoe.navbar"> 
-                <div class="container"> <a class="fw-bold navbar-brand text-warning" href="."><img src="assets/img/veldtoe_horns_words_option2.png" width="auto" height="74"></a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown-66" aria-controls="navbarNavDropdown-66" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> 
+                <div class="container">
+                    <a class="fw-bold navbar-brand text-warning" href=".">
+                        <img src="assets/img/veldtoe_horns_words_option2.png" width="auto" height="74">
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown-66" aria-controls="navbarNavDropdown-66" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span> 
                     </button>
                     <div class="collapse navbar-collapse " id="navbarNavDropdown-66"> 
                         <ul class="navbar-nav ms-auto"> 
-                            <li class="nav-item"> <a class="nav-link px-lg-3 py-lg-4 text-light" href="#"> <img src="assets/img/hunter.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninHunter">Hunter: Login/Sign Up </a>
+                            <li class="nav-item">
+                                <a class="nav-link px-lg-3 py-lg-4 text-light" href="#">
+                                    <img src="assets/img/hunter.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninHunter">
+                                    Hunter: Login/Sign Up
+                                </a>
                             </li>
-                            <li class="nav-item"> <a class="nav-link px-lg-3 py-lg-4 text-light" href="#"><img src="assets/img/farmer.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninFarmer">
-                                    Farmer: Login/Sign Up</a> 
+                            <li class="nav-item">
+                                <a class="nav-link px-lg-3 py-lg-4 text-light" href="#">
+                                    <img src="assets/img/farmer.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninFarmer">
+                                    Farmer: Login/Sign Up
+                                </a> 
                             </li>
                             <li class="nav-link m-4">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" style="margin-right: 12px;">
-                                    <label class="form-check-label text-white" for="flexSwitchCheckChecked">Switch to Afrikaans
-</label>
+                                    <label class="form-check-label text-white" for="flexSwitchCheckChecked">
+                                        Switch to Afrikaans
+                                    </label>
                                 </div>                                 
                             </li>                             
                         </ul>                         
