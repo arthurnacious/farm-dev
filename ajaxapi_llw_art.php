@@ -101,8 +101,11 @@ $capacity = (int) $hunters + (int) $guests;
 
 // search location
 $radius         = $_POST['radius'];
-$latitute       = $_POST['latitute'];
-$longitute      = (int) $_POST['longitute'];
+$latitute       = isset($_POST['latitute']) && is_numeric($_POST['latitute']) ? (float) $_POST['latitute'] : 0;
+$longitude      = isset($_POST['longitude']) && is_numeric($_POST['longitude']) ? (float) $_POST['longitude'] : 0;
+
+// echo json_encode($_POST);
+// exit();
 
 
 $tagNames = [];

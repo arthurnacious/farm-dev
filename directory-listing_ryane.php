@@ -142,7 +142,8 @@
                         <ul class="navbar-nav ms-auto"> 
                             <li class="nav-item">
                                 <a class="nav-link px-lg-3 py-lg-4 text-light text-nowrap" href="#" data-pgc="hunterregister.modal">
-                                    <img src="assets/img/hunter.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninHunter">Hunter: Login/Sign Up
+                                    <img src="assets/img/hunter.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninHunter">
+                                    Hunter: Login/Sign Up
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -208,8 +209,8 @@
                                         </select>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="customRange1" class="form-label text-secondary">Radius</label>
-                                        <input type="range" class="form-range" id="customRange1">
+                                        <label for="customRange1" class="form-label text-secondary">Radius <span id="radiusCount">1</span> km</label>
+                                        <input type="range" class="form-range" id="radiusRange">
                                     </div>
                                     <label class="form-label mb-3 text-secondary">Filter by tags</label>
                                     <div class="gy-2 mb-3 row row-cols-sm-2">
@@ -792,6 +793,7 @@
                         guests: "<?=$_GET['guests']?>",
                     }); 
 
+                
                 $('#filterForm_llw').submit(function (event) {
                     // Prevent the default form submission
                     event.preventDefault();
@@ -825,15 +827,35 @@
                     };  
 
                     fetchHotelData(formData);
+ 
 
                 });
+            
+                async function fetchHotelData(formData) {
 
-                function fetchHotelData(formData) {
+                    if(formData.location?.length > 0) { //Do this only if location is set
+                        try {
+                            const location = await getLocationLatLon(formData.location);
+                            if (!location) {
+                                console.log('Location not found.');
+                                return; // Early return if no location found
+                            }
+                            
+                            formData.latitute = location.lat;
+                            formData.longitude = location.lon;
+
+                            formData.radius = formData.radius ?? 10;
+
+                        } catch (error) {
+                            console.error('Failed to get location:', error);
+                        }
+                    }
 
                     var originalButtonText = $('#filter_btn').text();
-                    
-                    // Make AJAX request
 
+                    console.log(formData)
+                    
+                    // Make AJAX request                        
                     $.ajax({
                         url: 'ajaxapi_llw_art.php',
                         type: 'POST',
@@ -847,8 +869,8 @@
                             $('#loader-spinner').html(`${spinner(150)} <h2>Loading...</h2>`);
                         },
                         success: function (data) {
+                            console.log(data);
                             $('#empty').show();
-                            // console.log(data);
                             items = data;
                             updateDisplay(items);
                             
@@ -865,8 +887,39 @@
                         }
                     });
                 };
-            });
-            
+
+                async function getLocationLatLon(query) { //by the time of soing this, it required no api key
+                    try {
+                        // Construct the Nominatim API URL
+                        const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+
+                        // Await the fetch request to the Nominatim API
+                        const response = await fetch(apiUrl, {
+                        method: 'GET',
+                        headers: {
+                            'User-Agent': 'farm/1.0', //whaterver
+                            'Accept': 'application/json'
+                        }
+                        });
+
+                        const data = await response.json(); // Await the parsing of the JSON response
+
+                        if (data && data.length > 0 && data.at(0)) {
+                            var location = data.at(0);
+                            return { 
+                                lat: location.lat,
+                                lon: location.lon
+                            }
+                        } else {
+                            console.log('No results found');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching location data:', error);
+                    }
+                }
+
+
+            });       
         </script>
 
         <script>
@@ -946,5 +999,6 @@
               $("#search_text").text(value.length > 0 ? value : '...');
             });
         </script>
+        <script src="/assets/js/slider.js"></script>
     </body>
 </html>
