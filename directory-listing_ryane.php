@@ -56,7 +56,7 @@
                             <div class="pb-3 pt-3"> 
                                 <div class="border">
                                         <a href="/directory-details.php?farm=${item.farm_id}" class="d-block">
-                                            <div style="width: 350px; height: 240px; background-image: url('${item.farm_image}'); background-size: 100% 100%;" > </div>
+                                            <div style="width: 100%; height: 240px; background-image: url('${item.farm_image}'); background-size: cover" > </div>
                                         </a>                                    
                                     <div class="pb-3 ps-4 pe-4 pt-4">
                                         <div class="align-items-center d-flex justify-content-between">
