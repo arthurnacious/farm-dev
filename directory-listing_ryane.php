@@ -35,7 +35,7 @@ function escape_and_echo(string $text): string {
 }
 
 function checkImage($type, $id, $fileName) {
-    $directory = "/home/veldtuoy/public_html/dev/photos/{$type}/{$id}/";
+    $directory = "photos/{$type}/{$id}/";
     $files = (array) scandir($directory);
     $matchingFiles = preg_grep("/^{$fileName}\..*$/", $files);
      // Check if there is at least one matching file
@@ -52,6 +52,13 @@ function checkImage($type, $id, $fileName) {
 foreach ($farms as $farm) {
     $farm['farm_image'] = checkImage('farms', $farm['farm_id'], 'profile');
 }
+
+// foreach ($farms as $farm) {
+//     $farm['farm_image'] = checkImage('farms', $farm['farm_id'], 'profile');
+//    var_dump($farm['farm_image']);
+// }
+
+// die();
 
 function generateStarRating($ratingsAverage) {
     $filledStarSVG = '
@@ -125,7 +132,7 @@ function updateDisplay($items) {
             <div class="pb-3 pt-3"> 
                 <div class="border">
                         <a href="/directory-details.php?farm=' . escape_and_echo($item['farm_id']) . '" class="d-block">
-                            <div style="width: 350px; height: 240px; background-image: url("https://www.veldtoe.co.za/dev/photos/no-image.jpg"); background-size: 100% 100%;" > </div>
+                            <div style="width: 350px; height: 240px; background-image: url("' . escape_and_echo($item['farm_image']) . '"); background-size: 100% 100%;" > </div>
                         </a>                                    
                     <div class="pb-3 ps-4 pe-4 pt-4">
                         <div class="align-items-center d-flex justify-content-between">
@@ -203,7 +210,81 @@ function updateDisplay($items) {
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
         <script>
+            const updateDisplay = (items) => {
+                if(items.length > 0) {
+                    items.forEach(item => {
+                        let itemHTML = `
+                            <div class="pb-3 pt-3"> 
+                                <div class="border">
+                                        <a href="/directory-details.php?farm=${item.farm_id}" class="d-block">
+                                            <div style="width: 100%; height: 240px; background-image: url('${item.farm_image}'); background-size: cover" > </div>
+                                        </a>                                    
+                                    <div class="pb-3 ps-4 pe-4 pt-4">
+                                        <div class="align-items-center d-flex justify-content-between">
+                                            <div class="pb-1 pt-1">
+                                                <a href="/directory-details.php?farm=${item.farm_id}" class="link-dark text-decoration-none"><h2 class="h5 mb-1">${item.farm_name}</h2></a>
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.125em" height="1.125em" class="me-1 location text-primary">
+                                                        <g>
+                                                            <path fill="none" d="M0 0h24v24H0z"/>
+                                                            <path d="M18.364 17.364L12 23.728l-6.364-6.364a9 9 0 1 1 12.728 0zM12 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                                                        </g>
+                                                    </svg>
+                                                    <span class="align-middle">${item.district}</span>
+                                                </div>
+                                            </div>
+                                            <a class="btn fav ms-2 p-2 rounded-pill" href="/directory-details.php?farm=${item.farm_id}" aria-label="add to favorite">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em" class="d-block">
+                                                    <g>
+                                                        <path fill="none" d="M0 0H24V24H0z"/>
+                                                        <path d="M20.243 4.757c2.262 2.268 2.34 5.88.236 8.236l-8.48 8.492-8.478-8.492c-2.104-2.356-2.025-5.974.236-8.236C5.515 3 8.093 2.56 10.261 3.44L6.343 7.358l1.414 1.415L12 4.53l-.013-.014.014.013c2.349-2.109 5.979-2.039 8.242.228z"/>
+                                                    </g>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                        <hr/>
+                                        <div class="align-items-center d-flex justify-content-between">
+                                            <div class="pb-1 pt-1">
+                                                <span class="me-1 currentcolor">
+                                                    ${generateStarRating(roundToNearestHalf(item.average_rating))}
+                                                </span>
+                                                <span class="align-middle">${roundToNearestHalf(item.average_rating)}</span>
+                                                <span class="align-middle">
+                                                    (
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                                    ${item.count_rating}
+                                                    )
+                                                </span>
+                                            </div>
+                                            <span class="fw-bold pb-1 pt-1">From R${item.min_price}</span>
+                                        </div>
+                                    </div>                                         
+                                </div>                                     
+                            </div>
+                        `;
+                        
+                        // Append the new HTML to the container
+                        displayContainer.innerHTML += itemHTML;
+                    });
+                }else{
+                    displayContainer.innerHTML =    `<div class="pb-3 pt-3" id="empty">
+                                                        <div class="alert alert-info" role="alert">
+                                                            No farm(s) with those serach params.
+                                                        </div>
+                                                    </div>`;
+                }
 
+                ///update markers
+                let locations = items?.map((farm) => {
+                    return {
+                        lat: farm.latitude,
+                        lon:  farm.longitude,
+                        title: farm.farm_name
+                     }
+                });
+                placeMarkers(locations);
+            }
+    
             window.onload = function() {
                 document.getElementById('sortingOption').addEventListener('change', function() {
                     sortItems(items, this.value);
@@ -223,7 +304,8 @@ function updateDisplay($items) {
                         <ul class="navbar-nav ms-auto"> 
                             <li class="nav-item">
                                 <a class="nav-link px-lg-3 py-lg-4 text-light text-nowrap" href="#" data-pgc="hunterregister.modal">
-                                    <img src="assets/img/hunter.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninHunter">Hunter: Login/Sign Up
+                                    <img src="assets/img/hunter.png" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#modalSigninHunter">
+                                    Hunter: Login/Sign Up
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -289,8 +371,8 @@ function updateDisplay($items) {
                                         </select>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="customRange1" class="form-label text-secondary">Radius</label>
-                                        <input type="range" class="form-range" id="customRange1">
+                                        <label for="customRange1" class="form-label text-secondary">Radius <span id="radiusCount">1</span> km</label>
+                                        <input type="range" class="form-range" id="radiusRange">
                                     </div>
                                     <label class="form-label mb-3 text-secondary">Filter by tags</label>
                                     <div class="gy-2 mb-3 row row-cols-sm-2">
@@ -831,7 +913,7 @@ function updateDisplay($items) {
         <!-- Make sure you put this AFTER Leaflet's CSS -->
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
         <script>
-           // Initialize the map
+           // Initialize the map                
             var map = L.map('map').setView([-29.0789923, 24.5010161], 5);
 
             // Add a tile layer
@@ -839,10 +921,19 @@ function updateDisplay($items) {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            // Add a marker
-            L.marker([-29.0789923, 24.5010161]).addTo(map)
-                .bindPopup('A sample marker!')
-                .openPopup();
+
+            var locations = [];
+            placeMarkers(locations);
+
+            function placeMarkers(locations){
+
+
+                locations.forEach(function(location) {
+                    L.marker([location.lat, location.lon]).addTo(map)
+                    .bindPopup(location.title)
+                    .openPopup();
+                });
+            }
         </script>
         <script>
             var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
@@ -873,6 +964,7 @@ function updateDisplay($items) {
                         guests: "<?=$_GET['guests']?>",
                     }); 
 
+                
                 $('#filterForm_llw').submit(function (event) {
                     // Prevent the default form submission
                     event.preventDefault();
@@ -906,15 +998,35 @@ function updateDisplay($items) {
                     };  
 
                     fetchHotelData(formData);
+ 
 
                 });
+            
+                async function fetchHotelData(formData) {
 
-                function fetchHotelData(formData) {
+                    if(formData.location?.length > 0) { //Do this only if location is set
+                        try {
+                            const location = await getLocationLatLon(formData.location);
+                            if (!location) {
+                                console.log('Location not found.');
+                                return; // Early return if no location found
+                            }
+                            
+                            formData.latitute = location.lat;
+                            formData.longitude = location.lon;
+
+                            formData.radius = formData.radius ?? 10;
+
+                        } catch (error) {
+                            console.error('Failed to get location:', error);
+                        }
+                    }
 
                     var originalButtonText = $('#filter_btn').text();
-                    
-                    // Make AJAX request
 
+                    console.log(formData)
+                    
+                    // Make AJAX request                        
                     $.ajax({
                         url: 'ajaxapi_llw_art.php',
                         type: 'POST',
@@ -928,15 +1040,16 @@ function updateDisplay($items) {
                             $('#loader-spinner').html(`${spinner(150)} <h2>Loading...</h2>`);
                         },
                         success: function (data) {
+                            console.log(data);
                             $('#empty').show();
-                            console.log({data});
-                            items = data
+                            items = data;
                             updateDisplay(items);
+                            
                         },
                         error: function (error) {
                             $('#error').show();
                             $('#empty').hide();
-                            console.warn({error: error.message});
+                            console.warn({error: error});
                         },
                         complete: function () {
                             $('#filter_btn').html(originalButtonText);
@@ -945,8 +1058,39 @@ function updateDisplay($items) {
                         }
                     });
                 };
-            });
-            
+
+                async function getLocationLatLon(query) { //by the time of soing this, it required no api key
+                    try {
+                        // Construct the Nominatim API URL
+                        const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+
+                        // Await the fetch request to the Nominatim API
+                        const response = await fetch(apiUrl, {
+                        method: 'GET',
+                        headers: {
+                            'User-Agent': 'farm/1.0', //whaterver
+                            'Accept': 'application/json'
+                        }
+                        });
+
+                        const data = await response.json(); // Await the parsing of the JSON response
+
+                        if (data && data.length > 0 && data.at(0)) {
+                            var location = data.at(0);
+                            return { 
+                                lat: location.lat,
+                                lon: location.lon
+                            }
+                        } else {
+                            console.log('No results found');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching location data:', error);
+                    }
+                }
+
+
+            });       
         </script>
 
         <script>
@@ -1026,5 +1170,6 @@ function updateDisplay($items) {
               $("#search_text").text(value.length > 0 ? value : '...');
             });
         </script>
+        <script src="/assets/js/slider.js"></script>
     </body>
 </html>
