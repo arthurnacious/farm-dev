@@ -3,12 +3,12 @@
 if(!isset($_GET['farm']) || empty($_GET['farm'])){
     die('Farm s required');
 }
-require('/home/veldtuoy/llw_php/llw_config.php');
+// require('/home/veldtuoy/llw_php/llw_config.php');
 //please remove me
-// $db_host = 'localhost';
-// $db_user = 'Hamza';
-// $db_pass = '1404';
-// $db_name = 'farm';
+$db_host = 'localhost';
+$db_user = 'Hamza';
+$db_pass = '1404';
+$db_name = 'farm';
 
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
