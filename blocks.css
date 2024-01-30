@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 .proportions-box-square {
     position: relative;
     padding: 100% 0 0 !important;
@@ -165,4 +169,16 @@
 
 .opacity-0 {
     opacity: 0 !important;
+}
+
+
+
+@keyframes pulsate {
+    0% { background-color: #6c757d; } /* Original .bg-secondary color */
+    50% { background-color: #8c969d; } /* Lighter shade */
+    100% { background-color: #6c757d; } /* Back to original */
+}
+
+.bg-animate {
+    animation: pulsate 2s ease-in-out infinite;
 }

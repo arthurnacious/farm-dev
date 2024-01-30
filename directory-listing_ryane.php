@@ -95,7 +95,7 @@
                                                     )
                                                 </span>
                                             </div>
-                                            <span class="fw-bold pb-1 pt-1">From R${item.min_price}</span>
+                                            <span class="fw-bold pb-1 pt-1">From R ${item.min_price ?? 0}</span>
                                         </div>
                                     </div>                                         
                                 </div>                                     
@@ -108,7 +108,7 @@
                 }else{
                     displayContainer.innerHTML =    `<div class="pb-3 pt-3" id="empty">
                                                         <div class="alert alert-info" role="alert">
-                                                            No farm(s) with those serach params.
+                                                            No farm(s) with those search params.
                                                         </div>
                                                     </div>`;
                 }
@@ -190,7 +190,7 @@
                                         </span>
                                     </div>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="border-end-0 form-control p-3" value="<?=$_GET['search_location']?>" name="search_location" id="search_location" placeholder="Location" aria-label="Enter Location" aria-describedby="location-input">
+                                        <input type="text" class="border-end-0 form-control p-3" value="<?=isset($_GET['search_location']) ? $_GET['search_location'] : '' ?>" name="search_location" id="search_location" placeholder="Location" aria-label="Enter Location" aria-describedby="location-input">
                                         <span class="bg-white input-group-text pe-3 ps-3" id="location-input">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em">
                                                 <path fill="none" d="M0 0h24v24H0z"/>
@@ -208,9 +208,9 @@
                                             <option value="5">Option 5</option>
                                         </select>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="customRange1" class="form-label text-secondary">Radius <span id="radiusCount">1</span> km</label>
-                                        <input type="range" class="form-range" id="radiusRange">
+                                    <div class="mb-3" id="range-div">
+                                        <label for="radiusRange" class="form-label text-secondary">Radius <span id="radiusCount">1</span> km</label>
+                                        <input type="range" class="form-range" id="radiusRange" value="1">
                                     </div>
                                     <label class="form-label mb-3 text-secondary">Filter by tags</label>
                                     <div class="gy-2 mb-3 row row-cols-sm-2">
@@ -323,12 +323,15 @@
                                     </select>                                     
                                 </div>
                             </div>
-                            <div id="loader-spinner"></div>
+                            <div id="loader"></div>
                             <div id="error" style="display: none;">
-                                <div class="alert alert-warning" role="alert">
-                                    An error has occured...
-                                </div>
+                                <div class="alert alert-warning" role="alert"></div>
                             </div>
+
+                            <div id="location-error" style="display: none;">
+                                <div class="alert alert-warning" role="alert"></div>
+                            </div>
+
                             <div
                                 class="justify-content-center row row-cols-md-2"
                                 id="grids"
@@ -743,7 +746,7 @@
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
         <script>
            // Initialize the map                
-            var map = L.map('map').setView([-29.0789923, 24.5010161], 5);
+            var map = L.map('map').setView([-28.4792625, 24.6727135], 5);
 
             // Add a tile layer
             L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
@@ -786,11 +789,11 @@
 
                 // fetch data without any params on page load;
                 fetchHotelData({
-                        location: "<?=$_GET['search_location']?>",
-                        check_in: "<?=$_GET['check_in']?>",
-                        check_out: "<?=$_GET['check_out']?>",
-                        hunters: "<?=$_GET['hunters']?>",
-                        guests: "<?=$_GET['guests']?>",
+                        location: "<?=isset($_GET['search_location']) ? $_GET['search_location'] : '' ?>",
+                        check_in: "<?=isset($_GET['check_in']) ? $_GET['check_in'] : '' ?>",
+                        check_out: "<?=isset($_GET['check_out']) ? $_GET['check_out'] : '' ?>",
+                        hunters: "<?=isset($_GET['hunters']) ? $_GET['hunters'] : '' ?>",
+                        guests: "<?=isset($_GET['guests']) ? $_GET['guests'] : '' ?>",
                     }); 
 
                 
@@ -798,12 +801,14 @@
                     // Prevent the default form submission
                     event.preventDefault();
 
+                    const radius = + $('#radiusCount').text()
+
                     // Collect form data
                     var formData = {
                         keyword: $('#search_keywords').val(),
                         location: $('#search_location').val(),
                         category: $('#searchCategory').val(),
-                        radius: $('#customRange1').val(),
+                        radius: radius,
                         tags: {
                             atm_on_site: $('#check_atm').prop('checked') ? 1 : 0,
                             free_wifi: $('#check_wfi').prop('checked') ? 1 : 0,
@@ -820,72 +825,78 @@
                             terrace_patio: $('#check_pat').prop('checked') ? 1 : 0,
                             restaurant: $('#check_rst').prop('checked') ? 1 : 0,
                         },
-                        check_in: "<?=$_GET['check_in']?>",
-                        check_out: "<?=$_GET['check_out']?>",
-                        hunters: "<?=$_GET['hunters']?>",
-                        guests: "<?=$_GET['guests']?>",
-                    };  
+                        check_in: "<?=empty($_GET['check_in']) ? $_GET['check_in'] : '' ?>",
+                        check_out: "<?=empty($_GET['check_out']) ? $_GET['check_out'] : '' ?>",
+                        hunters: "<?=empty($_GET['hunters']) ? $_GET['hunters'] : '' ?>",
+                        guests: "<?=empty($_GET['guests']) ? $_GET['guests'] : '' ?>",
+                    };
 
                     fetchHotelData(formData);
- 
 
                 });
             
                 async function fetchHotelData(formData) {
+
+                    //defaults
+                    $('#loader').html(`${createSkeletons(5)}`);
+                    $('#loader').show();
+                    $('#grids').hide();
+                    $('#error').hide();
+                    $('#filter_btn').html(`${spinner(25)} Filtering...`);
 
                     if(formData.location?.length > 0) { //Do this only if location is set
                         try {
                             const location = await getLocationLatLon(formData.location);
                             if (!location) {
                                 console.log('Location not found.');
-                                return; // Early return if no location found
-                            }
-                            
-                            formData.latitute = location.lat;
-                            formData.longitude = location.lon;
+                                $('#location-error .alert').html('Couldnt find location ' + formData.location)
+                                $('#location-error').show();
+                                $('#range-div').hide();
 
-                            formData.radius = formData.radius ?? 10;
+                            }else{                       
+                                formData.latitute   = location.lat;
+                                formData.longitude  = location.lon;
+                                formData.boundingbox = location.boundingbox;
+
+                                formData.radius = formData.radius ?? 10;
+                                $('#range-div').show();
+                                $('#location-error').hide()
+                            }
 
                         } catch (error) {
+                            $('#location-error .alert').html('An error has occured while getting location ' + formData.location)
+                            $('#location-error').show();
                             console.error('Failed to get location:', error);
                         }
                     }
 
                     var originalButtonText = $('#filter_btn').text();
 
-                    console.log(formData)
-                    
-                    // Make AJAX request                        
+
                     $.ajax({
                         url: 'ajaxapi_llw_art.php',
                         type: 'POST',
                         data: formData,
                         dataType: 'json',
-                        beforeSend: function () {
-                            $('#loader-spinner').show();
-                            $('#grids').hide();
-                            $('#error').hide();
-                            $('#filter_btn').html(`${spinner(25)} Filtering...`);
-                            $('#loader-spinner').html(`${spinner(150)} <h2>Loading...</h2>`);
-                        },
-                        success: function (data) {
-                            console.log(data);
+                        success: function(data) {
                             $('#empty').show();
                             items = data;
                             updateDisplay(items);
-                            
                         },
-                        error: function (error) {
+                        error: function(xhr, status, error) {
+                            $('#error .alert').html('An error has occurred while fetching farms...');
                             $('#error').show();
                             $('#empty').hide();
-                            console.warn({error: error});
+                            $('#loader').hide();
+                            console.warn({ error: error });
                         },
-                        complete: function () {
+                        complete: function() {
                             $('#filter_btn').html(originalButtonText);
-                            $('#loader-spinner').hide();
+                            $('#loader').hide();
                             $('#grids').show();
                         }
                     });
+
                 };
 
                 async function getLocationLatLon(query) { //by the time of soing this, it required no api key
@@ -895,18 +906,19 @@
 
                         // Await the fetch request to the Nominatim API
                         const response = await fetch(apiUrl, {
-                        method: 'GET',
-                        headers: {
-                            'User-Agent': 'farm/1.0', //whaterver
-                            'Accept': 'application/json'
-                        }
+                            method: 'GET',
+                            headers: {
+                                'User-Agent': 'farm/1.0', //whatever
+                                'Accept': 'application/json'
+                            }
                         });
 
                         const data = await response.json(); // Await the parsing of the JSON response
 
                         if (data && data.length > 0 && data.at(0)) {
                             var location = data.at(0);
-                            return { 
+                            return {
+                                boundingbox: location.boundingbox,
                                 lat: location.lat,
                                 lon: location.lon
                             }
@@ -917,7 +929,6 @@
                         console.error('Error fetching location data:', error);
                     }
                 }
-
 
             });       
         </script>
@@ -950,43 +961,74 @@
                 // Use a switch case to determine the star rating
                 switch (Math.round(ratingsAverage * 2) / 2) {
                     case 0.5:
-                    ratingHTML = halfStarSVG;
+                        ratingHTML = emptyStarSVG + emptyStarSVG + emptyStarSVG + emptyStarSVG + halfStarSVG;
                     break;
                     case 1:
-                    ratingHTML = filledStarSVG;
+                        ratingHTML = emptyStarSVG + emptyStarSVG + emptyStarSVG + emptyStarSVG + filledStarSVG;
                     break;
                     case 1.5:
-                    ratingHTML = filledStarSVG + halfStarSVG;
+                        ratingHTML = emptyStarSVG + emptyStarSVG + emptyStarSVG + filledStarSVG + halfStarSVG;
                     break;
                     case 2:
-                    ratingHTML = filledStarSVG + filledStarSVG;
+                        ratingHTML = emptyStarSVG + emptyStarSVG + emptyStarSVG + filledStarSVG + filledStarSVG;
                     break;
                     case 2.5:
-                    ratingHTML = filledStarSVG + filledStarSVG + halfStarSVG;
+                        ratingHTML = emptyStarSVG + emptyStarSVG + filledStarSVG + filledStarSVG + halfStarSVG;
                     break;
                     case 3:
-                    ratingHTML = filledStarSVG + filledStarSVG + filledStarSVG;
+                        ratingHTML = emptyStarSVG + emptyStarSVG + filledStarSVG + filledStarSVG + filledStarSVG;
                     break;
                     case 3.5:
-                    ratingHTML = filledStarSVG + filledStarSVG + filledStarSVG + halfStarSVG;
+                        ratingHTML = emptyStarSVG + filledStarSVG + filledStarSVG + filledStarSVG + halfStarSVG;
                     break;
                     case 4:
-                    ratingHTML = filledStarSVG + filledStarSVG + filledStarSVG + filledStarSVG;
+                        ratingHTML = emptyStarSVG + filledStarSVG + filledStarSVG + filledStarSVG + filledStarSVG;
                     break;
                     case 4.5:
-                    ratingHTML =
-                        filledStarSVG + filledStarSVG + filledStarSVG + filledStarSVG + halfStarSVG;
+                        ratingHTML = filledStarSVG + filledStarSVG + filledStarSVG + filledStarSVG + halfStarSVG;
                     break;
                     case 5:
-                    ratingHTML =
-                        filledStarSVG + filledStarSVG + filledStarSVG + filledStarSVG + filledStarSVG;
+                        ratingHTML = filledStarSVG + filledStarSVG + filledStarSVG + filledStarSVG + filledStarSVG;
                     break;
                     default:
-                    ratingHTML = emptyStarSVG + emptyStarSVG + emptyStarSVG + emptyStarSVG + emptyStarSVG;
+                        ratingHTML = emptyStarSVG + emptyStarSVG + emptyStarSVG + emptyStarSVG + emptyStarSVG;
                     break;
                 }
 
                 return ratingHTML;
+            }
+
+            function createSkeletons(count) {
+                returnable = '';
+
+                for (let i = 0; i < count; i++) {
+                    let skeletonHTML = `
+                        <div class="pb-3 pt-3"> 
+                            <div class="border">
+                                <div class="d-block bg-animate" style="width: 100%; height: 240px;"></div>
+                                <div class="pb-3 ps-4 pe-4 pt-4">
+                                    <div class="align-items-center d-flex justify-content-between">
+                                        <div class="pb-1 pt-1">
+                                            <div class="bg-animate" style="width: 150px; height: 20px; border-radius: 4px;"></div>
+                                            <div class="mt-2 bg-animate" style="width: 100px; height: 15px; border-radius: 4px;"></div>
+                                        </div>
+                                        <div class="ms-2 p-2 rounded-pill" style="width: 36px; height: 36px; background-color: #ddd;"></div>
+                                    </div>
+                                    <hr>
+                                    <div class="align-items-center d-flex justify-content-between">
+                                        <div class="pb-1 pt-1 d-flex">
+                                            <div class="bg-animate" style="width: 100px; height: 15px; border-radius: 4px;"></div>
+                                        </div>
+                                        <div class="bg-animate" style="width: 80px; height: 20px; border-radius: 4px;"></div>
+                                    </div>
+                                </div>                                         
+                            </div>                                     
+                        </div>
+                    `;
+                    returnable += skeletonHTML;
+                }
+
+                return `<div class="justify-content-center row row-cols-md-2"> ${returnable} </div>`;
             }
 
             function roundToNearestHalf(value) {
@@ -994,10 +1036,40 @@
             }
         </script>
         <script>
-            $("#search_keywords").on("input", function() {
-                let value = $(this).val();
-              $("#search_text").text(value.length > 0 ? value : '...');
+
+            $(document).ready(function() {
+
+                toggleRange($("#search_keywords").val());
+
+                function toggleRange(value) {
+                    if(value.length > 0){
+                        $('#range-div').show();
+                    }else{
+                        $('#range-div').hide();
+                    }
+                }
+
+                let search_location = $("#search_location").val();
+                let search_keywords = $("#search_keywords").val();
+                $("#search_text").text(search_keywords.length > 0 ? search_keywords : search_location.length > 0 ? search_location : '...');
+
+                $("#search_keywords").on("input", function() {
+                    let value = $(this).val();
+                    $("#search_text").text(value.length > 0 ? value : '...');
+                });
+                
+                $('#search_location').on('input', function() {
+                    // Get the value of the input
+                    var inputValue = $(this).val();
+                    var url = new URL(window.location);
+                    var params = new URLSearchParams(url.search);
+                    params.set('search_location', inputValue);
+                    var newUrl = url.pathname + '?' + params.toString();
+                    history.replaceState(null, '', newUrl);
+                    toggleRange(inputValue)
+                });
             });
+
         </script>
         <script src="/assets/js/slider.js"></script>
     </body>

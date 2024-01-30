@@ -103,6 +103,7 @@ $capacity = (int) $hunters + (int) $guests;
 $radius         = $_POST['radius'];
 $latitute       = isset($_POST['latitute']) && is_numeric($_POST['latitute']) ? (float) $_POST['latitute'] : 0;
 $longitude      = isset($_POST['longitude']) && is_numeric($_POST['longitude']) ? (float) $_POST['longitude'] : 0;
+$boundingbox    = $_POST['boundingbox'];
 
 // echo json_encode($_POST);
 // exit();
@@ -133,16 +134,8 @@ $sql = "SELECT f.*,
   MIN(au.price) AS min_price, 
   MAX(au.price) AS max_price";
   if(!empty($radius)){
-    $sql .=  ", distance.distance_value AS distance";
-  }
-$sql .=  " FROM farm f ";
-if(!empty($radius)){
-    $sql .=  "LEFT JOIN 
-    (SELECT 
-         farm_id, 
-         (6371 * acos(cos(radians(-28.691861)) * cos(radians(latitude)) * cos(radians(longitude) - radians(26.302018)) + sin(radians(-28.691861)) * sin(radians(latitude)))) AS distance_value
-     FROM 
-         farm) AS distance ON f.farm_id = distance.farm_id";
+    $sql .=  ", (6371 * acos(cos(radians(".$latitute.")) * cos(radians(f.latitude)) * cos(radians(f.longitude) - radians(".$longitude.") + sin(radians(".$latitute.")) * sin(radians(f.latitude))))) AS distance_value
+    FROM farm f";
   }
   $sql .= " LEFT JOIN farm_features ff ON f.farm_id = ff.farm_id
   LEFT JOIN reference_features rf ON ff.feature_id = rf.id
@@ -150,40 +143,50 @@ if(!empty($radius)){
   LEFT JOIN accommodation_units au ON f.farm_id = au.farm_id
   LEFT JOIN bookings b ON b.farm_id = au.farm_id";
 
-  // Add WHERE clause if any of the conditions are present
-  $conditions = [];
+// Add WHERE clause if any of the conditions are present
+$conditions = [];
 
-  if (!empty($check_out)) {
-      $conditions[] = "b.booking_date_to <= " . $check_out;
-  }
+if (!empty($check_out)) {
+    $conditions[] = "b.booking_date_to <= " . $check_out;
+}
 
-  if (!empty($featureIds) && count($featureIds) > 0) {
-      $conditions[] = "(rf.id IN (" . implode(", ", $featureIds) . "))";
-  }
+if (!empty($featureIds) && count($featureIds) > 0) {
+    $conditions[] = "(rf.id IN (" . implode(", ", $featureIds) . "))";
+}
 
-  if (!empty($location)) {
-      $conditions[] = "f.district LIKE '%" . $location . "%'";
-  }
+if (!empty($location)) {
+    $conditions[] = "f.district LIKE '%" . $location . "%'";
+}
 
-  if (!empty($searchKeywords)) {
-      $conditions[] = "f.farm_name LIKE '%" . $searchKeywords . "%'";
-  }
+if (!empty($searchKeywords)) {
+    $conditions[] = "f.farm_name LIKE '%" . $searchKeywords . "%'";
+}
 
-  if (!empty($category)) {
-      $conditions[] = "f.category = " . (int) $category;
-  }
+if (!empty($category)) {
+    $conditions[] = "f.category = " . (int) $category;
+}
 
-  if (!empty($conditions)) {
-      $sql .= " WHERE " . implode(" AND ", $conditions);
-  }
+if (!empty($conditions)) {
+    $sql .= " WHERE " . implode(" AND ", $conditions);
+}
 
-  $sql .= " GROUP BY f.farm_id";
-  
-  if(!empty($radius)){
-    $sql .= " HAVING 
-      distance.distance_value < ". $radius;
-  }
-  $sql .= " ORDER BY f.farm_id";
+if(!empty($radius) && !empty($boundingbox)){
+  $topLeftLat     = $boundingbox[0];
+  $bottomRightLat = $boundingbox[1];
+  $topLeftLong     = $boundingbox[2];
+  $bottomRightLong     = $boundingbox[3];
+
+  $sql .= !empty($conditions) ? " AND " : " WHERE ";
+  $sql .= " f.latitude BETWEEN ".$topLeftLat." AND ".$bottomRightLat."
+              AND f.longitude BETWEEN ".$topLeftLong." AND ".$bottomRightLong;
+}
+
+$sql .= " GROUP BY f.farm_id";
+
+if(!empty($radius) && !empty($boundingbox)){
+  $sql .= " HAVING distance_value < ". $radius;
+}
+$sql .= " ORDER BY f.farm_id";
 
 
 // echo json_encode(escapeLineBreaksAndSpaces($sql));
