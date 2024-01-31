@@ -133,10 +133,12 @@ $sql = "SELECT f.*,
   AVG(au.price) AS avg_price, 
   MIN(au.price) AS min_price, 
   MAX(au.price) AS max_price";
-  if(!empty($radius)){
-    $sql .=  ", (6371 * acos(cos(radians(".$latitute.")) * cos(radians(f.latitude)) * cos(radians(f.longitude) - radians(".$longitude.") + sin(radians(".$latitute.")) * sin(radians(f.latitude))))) AS distance_value
-    FROM farm f";
+
+  if(!empty($radius) && !empty($boundingbox)){
+    $sql .=  ", (6371 * acos(cos(radians(".$latitute.")) * cos(radians(f.latitude)) * cos(radians(f.longitude) - radians(".$longitude.") + sin(radians(".$latitute.")) * sin(radians(f.latitude))))) AS distance_value";
   }
+
+  $sql .= " FROM farm f";
   $sql .= " LEFT JOIN farm_features ff ON f.farm_id = ff.farm_id
   LEFT JOIN reference_features rf ON ff.feature_id = rf.id
   LEFT JOIN farm_ratings fr ON f.farm_id = fr.farm_id
@@ -184,7 +186,7 @@ if(!empty($radius) && !empty($boundingbox)){
 $sql .= " GROUP BY f.farm_id";
 
 if(!empty($radius) && !empty($boundingbox)){
-  $sql .= " HAVING distance_value < ". $radius;
+  $sql .= " HAVING distance_value <= ". $radius;
 }
 $sql .= " ORDER BY f.farm_id";
 
