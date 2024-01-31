@@ -18,7 +18,38 @@
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
         <script>
-            const updateDisplay = (items) => {
+            let items = [];
+    
+            function sortItems(items, option) {
+                switch (option) {
+                    case "Name":
+                        items.sort((a, b) => a.farm_name.localeCompare(b.farm_name));
+                        break;
+                    case "Price: High to Low":
+                        items.sort((a, b) => b.min_price - a.min_price);
+                        break;
+                    case "Price: Low to High":
+                        items.sort((a, b) => a.min_price - b.min_price);
+                        break;
+                    case "Nearby":
+                        // items.sort((a, b) => a.distance - b.distance);
+                        break;
+                    case "Random":
+                        items.sort(() => Math.random() - 0.5);
+                        break;
+                    default:
+                        //no sorting
+                        break;
+                }
+    
+                updateDisplay(items);
+            }
+    
+            function updateDisplay(items) {
+                // Get the container element for the grids and clear it
+                let displayContainer = document.getElementById('grids');
+                displayContainer.innerHTML = '';
+
                 if(items.length > 0) {
                     items.forEach(item => {
                         let itemHTML = `
@@ -98,7 +129,6 @@
                     sortItems(items, this.value);
                 });
             };
-
         </script>    
 
     </head>
@@ -307,15 +337,6 @@
                                 id="grids"
                             >
                             <!-- data goes here -->
-                            <?php
-                                foreach ($farms as $farm) {
-                                    foreach ($farm as $key => $value) {
-                                        echo $key . ': ' . $value . '<br>';
-                                    }
-                                    echo '<hr>'; // Just to separate each farm's data for clarity
-                                }
-                                echo updateDisplay($farms);
-                            ?>
                             </div>
 
                             <!-- Modal -->
