@@ -212,6 +212,35 @@
                                         <label for="radiusRange" class="form-label text-secondary">Radius <span id="radiusCount">1</span> km</label>
                                         <input type="range" class="form-range" id="radiusRange" value="1">
                                     </div>
+                                    <div class="row">
+                                        <p class="col-12">Step 2: Select your dates</p>
+                                        <div class="col-lg-6 col-sm-12 mb-1"> 
+                                            <label for="check_in" class="col-form-label-lg form-label">Check in</label>
+                                            <input name="check_in" id="check_in" type="date" class="border-end-0 form-control p-3" placeholder="When must your trip start?">
+                                            <div class="input-group date" id="SelectFromDate2"></div>                                         
+                                        </div>
+                                        <div class="col-lg-6 col-sm-12 mb-1"> 
+                                            <label for="check_out" class="col-form-label-lg form-label">Check out</label>
+                                            <input name="check_out" id="check_out" type="date" class="border-end-0 form-control p-3" placeholder="When must your trip start?">
+                                            <div class="input-group date" id="SelectToDate2"></div>               
+                                        </div> 
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label for="numhunters" class="col-12 form-label">
+                                                <span id="TimeText">1</span> hunters
+                                            </label>
+                                            <input name="hunters" type="range" class="form-range" min="1" max="20" value="1" id="TimeRange" style="width: fit-content;">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label for="numguests" class="col-12 form-label">
+                                                <span id="TimeTextGuests">0</span> guests
+                                            </label>
+                                            <input name="guests" type="range" class="form-range" min="0" max="20" value="0" id="TimeRangeGuests" style="width: fit-content;">
+                                        </div>
+                                    </div>
                                     <label class="form-label mb-3 text-secondary">Filter by tags</label>
                                     <div class="gy-2 mb-3 row row-cols-sm-2">
                                         <div>
